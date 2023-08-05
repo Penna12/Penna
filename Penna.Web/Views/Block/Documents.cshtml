@@ -1,0 +1,130 @@
+﻿@model ExplorerModel
+
+@{
+    Block block = ViewBag.Block as Block;
+    ViewData["Title"] = block.Name + " Dosyaları";
+}
+
+<h1>@block.Name Dosyaları</h1>
+<div class="card">
+    <div class="card-body">
+        <section id="file-explorer">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-body">
+                                <div class="d-flex flex-row">
+                                    <button class="btn btn-primary mr-1" type="button" id="new-folder-buttons" data-folderUrl="xxx-url" data-id="VVV-id">
+                                        <i class="feather icon-folder"></i> Yeni Klasör
+                                    </button>
+
+                                    <form asp-action="UploadFile" id="fileUploadForm" class="form-inline" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="URL" value="XXX.URL" />
+                                        <input type="file" name="file" class="form-control" id="customFile" multiple />
+                                        <button type="submit" class="btn btn-primary ml-1">
+                                            <i class="feather icon-upload"></i> Yükle
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <div class="card-body">
+                                        <h3>XXX.URL</h3>
+
+                                        @* root klasöründe değil ise up level çalışsın *@
+                                        <a title="Parent"
+                                           href="/Panel/Litigation/UploadDocuments/">
+                                            <img src="~/images/up.png" alt="Up" style="width: 20px; height: 20px; border: none" />
+                                        </a>
+
+                                        <div class="row">
+                                            <span class="col-md-4 text-left">Klasör/Dosya Adı</span>
+                                            <span class="col-md-4 text-right">Boyut</span>
+                                            <span class="col-md-4 text-right">Son Değişiklik</span>
+                                        </div>
+                                        <hr class="mt-0 mb-0" />
+                                        @*Listing the directories *@
+
+                                        @*Listing the files *@
+
+                                        @* Dosya Yükle *@
+                                        <hr class="mt-0 mb-0" />
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body"><a href="/Panel/Litigation/List" class="btn btn-secondary">Geri dön</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade text-left" id="sendDocumentModal" tabindex="-1" role="dialog" aria-labelledby="sendDocumentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title" id="sendDocumentModalLabel">WhatsApp Mesaj</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="sendDocumentForm" class="form-horizontal" action="#" method="POST" novalidate>
+
+                    <div class="form-group">
+                        <label for="MessageTo" class="col-form-label">Kime</label>
+                        <div class="controls d-flex">
+                            <select id="CountryCode" asp-items="@ViewBag.CountryCode" class="form-control"
+                                    tabindex="6"></select>
+                            <input id="MessageTo" type="text" class="form-control" length="12" length="10"
+                                   minlength="10" maxlength="10" pattern="[0-9]{10}"
+                                   onkeypress="return isNumeric(event)"
+                                   placeholder="Telefon no 10 karakter giriniz. Örn: 5554443322" required
+                                   data-validation-required-message="Lütfen, (905554443322) formatında telefon no giriniz."
+                                   data-validation-pattern-message="Telefon numarası başında sıfır olmadan, boşluksuz 10 haneden oluşmalıdır. Örneğin: 5554443322 gibi."
+                                   data-validation-minlength-message="Telefon numarası minimum 10 karakter olabilir."
+                                   data-validation-maxlength-message="Telefon numarası maksimum 10 karakter olabilir.">
+                        </div>
+                        <div class="help-block"></div>
+                    </div> <!--MessageTo-->
+
+                    <div class="form-group">
+                        <label for="MessageCaption" class="col-form-label">Başlık</label>
+                        <input id="MessageCaption" class="form-control" placeholder="Başlık giriniz.">
+                    </div> <!--MessageCaption-->
+
+                    <div class="form-group">
+                        <input type="hidden" id="litid" class="form-control" readonly>
+                        <input type="hidden" id="path" class="form-control" readonly>
+                        <p class="h4">
+                            <span class="text-dark font-weight-bold">Ek:</span>
+                            <span id="path-file-url" class="text-gray font-weight-light"></span>
+                        </p>
+                    </div>
+
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                        <p id="response-message" class="mb-0"></p>
+                        <button type="button" class="close alert-dismiss" aria-label="Close">
+                            <span aria-hidden="true"><i class="feather icon-x-circle"></i></span>
+                        </button>
+                    </div>
+
+                    <hr>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Gönder</button>
+                        <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Kapat</button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,286 @@
+﻿@model CurrentAccountDto
+
+@using Penna.Core.Utilities.Enums
+@using Penna.Core.Extensions
+
+@section Styles {
+    <!--begin::Page CurrentAccount Stylesheets(used by this page)-->
+    <link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Page CurrentAccount Stylesheets-->
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+
+<!--begin::Card-->
+<div class="card">
+    <!--begin::Card header-->
+    <div class="card-header border-0 pt-10">
+        <h2 class="fw-bolder">@if (Model.CurrentAccount.Id > 0)
+        {<span>Tedarikçi Güncelleme</span> }
+        else
+        { <span>Yeni Tedarikçi Ekleme</span>}</h2>
+    </div>
+    <!--end::Card header-->
+    <!--begin::Card body-->
+    <div class="card-body pt-0">
+        <!--begin::Form-->
+        <form class="form" method="post" id="kt_upsert_vendors_form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (Model.CurrentAccount.Id > 0)
+            {
+                <input type="hidden" asp-for="CurrentAccount.Id" />
+                <input type="hidden" asp-for="CurrentAccount.TenantId" />
+                <input type="hidden" asp-for="CurrentAccount.AccountTypeId" />
+                <input type="hidden" asp-for="CurrentAccount.CreatedBy" />
+                <input type="hidden" asp-for="CurrentAccount.CreatedDate" />
+            }
+            <!--begin::body-->
+            <div class="pt-10">
+                <!--begin::Input group CompanyName & AuthorizedPerson-->
+                <div class="row mb-7">
+                    <!--begin::Input group CompanyName-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Üretici Firma Adı</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="CurrentAccount.CompanyName" class="form-control form-control-solid" placeholder="Üretici firma adı giriniz" />
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="CurrentAccount.CompanyName"></span>
+                    </div>
+                    <!--end::Input group CompanyName-->
+                    <!--begin::Input group AuthorizedPerson-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Yetkili Kişi</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="CurrentAccount.AuthorizedPerson" class="form-control form-control-solid" placeholder="Yetkili kişiyi giriniz" />
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="CurrentAccount.AuthorizedPerson"></span>
+                    </div>
+                    <!--end::Input group AuthorizedPerson-->
+                </div>
+                <!--end::Input group CompanyName & AuthorizedPerson-->
+                <!--begin::Input group Address-->
+                <div class="row g-9 mb-7">
+                    <div class="col-md-12 fv-row">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Adres</label>
+                        <!--end::Label-->
+                        <!--begin::Input Address-->
+                        <textarea asp-for="CurrentAccount.Address" class="form-control form-control-solid" placeholder="Adres giriniz"></textarea>
+                        <!--end::Input Address-->
+                    </div>
+                </div>
+                <!--end::Input group Address-->
+                <!--begin::Input group City & Country-->
+                <div class="row g-9 mb-7">
+                    <!--begin::Col Country-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="fs-6 fw-bold mb-2">
+                            <span class="required">Ülke</span>
+                            <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Ülke"></i>
+                        </label>
+                        <!--end::Label-->
+                        <!--begin::Input country-->
+                        <select asp-for="CurrentAccount.CountryId" asp-items="Model.CountryList" class="form-select form-select-solid fw-bolder" aria-label="Ülke Seç." data-control="select2" data-dropdown-parent="#kt_upsert_vendors_form" data-placeholder="- Lütfen bir ülke seçiniz">
+                            <option value="">Ülke seç...</option>
+                        </select>
+                        <!--end::Input country-->
+                        <span class="text-danger" asp-validation-for="CurrentAccount.CountryId"></span>
+                    </div>
+                    <!--end::Col Country-->
+                    <!--begin::Col City-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Şehir</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <select asp-for="CurrentAccount.CityId" asp-items="Model.CityList" class="form-select form-select-solid fw-bolder" aria-label="Şehir Seç." data-control="select2" data-dropdown-parent="#kt_upsert_vendors_form" data-placeholder="- Lütfen bir şehir seçiniz">
+                            <option value="">Şehir seç...</option>
+                        </select>
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="CurrentAccount.CityId"></span>
+                    </div>
+                    <!--end::Col City-->
+                </div>
+                <!--end::Input group CityId & CountryId-->
+                <!--begin::Input group TownId & BusinessGroupId-->
+                <div class="row g-9 mb-7">
+                    <!--begin::Col TownId-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="fs-6 fw-bold mb-2">
+                            <span class="required">İlçe</span>
+                            <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="İlçe"></i>
+                        </label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <select asp-for="CurrentAccount.TownId" asp-items="Model.TownList" class="form-select form-select-solid fw-bolder" aria-label="İlçe Seç." data-control="select2" data-dropdown-parent="#kt_upsert_vendors_form" data-placeholder="- Lütfen bir ilçe seçiniz">
+                            <option value="">İlçe seç...</option>
+                        </select>
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="CurrentAccount.TownId"></span>
+                    </div>
+                    <!--end::Col TownId-->
+                    <!--begin::Col BusinessGroupId-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">İş Grubu</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <select asp-for="CurrentAccount.BusinessGroupId" asp-items="@Html.GetEnumSelectList<BusinessGroupEnum>()" class="form-select form-select-solid fw-bolder">
+                            <option value="">İş grubu seç...</option>
+                        </select>
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Col BusinessGroupId-->
+                    <span class="text-danger" asp-validation-for="CurrentAccount.BusinessGroupId"></span>
+                </div>
+                <!--end::Input group TownId & BusinessGroupId-->
+                <!--begin::Input group TaxId & TaxOffice-->
+                <div class="row g-9 mb-7">
+                    <!--begin::Col TaxId-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Vergi No</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="CurrentAccount.TaxId" class="form-control form-control-solid" maxlength="11" pattern="[0-9]{11}" placeholder="Vergi no giriniz" />
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="CurrentAccount.TaxId"></span>
+                    </div>
+                    <!--end::Col TaxId-->
+                    <!--begin::Col TaxOffice-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Vergi Dairesi</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="CurrentAccount.TaxOffice" class="form-control form-control-solid" placeholder="Vergi dairesi giriniz" />
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="CurrentAccount.TaxOffice"></span>
+                    </div>
+                    <!--end::Col TaxOffice-->
+                </div>
+                <!--end::Input group TaxId & TaxOffice-->
+                <!--begin::Input group Phone1 & Phone2-->
+                <div class="row g-9 mb-7">
+                    <!--begin::Input group Phone1-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Telefon-1</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="CurrentAccount.Phone1" class="form-control form-control-solid" data-inputmax="(999) 999-9999" placeholder="Telefon no giriniz" />
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="CurrentAccount.Phone1"></span>
+                    </div>
+                    <!--end::Input group Phone1-->
+                    <!--begin::Input group Phone2-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="fs-6 fw-bold mb-2">Telefon-2</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="CurrentAccount.Phone2" class="form-control form-control-solid" data-inputmax="(999) 999-9999" placeholder="Telefon no giriniz" />
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="CurrentAccount.Phone2"></span>
+                    </div>
+                    <!--end::Input group Phone2-->
+                </div>
+                <!--end::Input group Phone1 & Phone2-->
+                <!--begin::Input group Email & CompanyStatusId-->
+                <div class="row mb-7">
+                    <!--begin::Input group Email-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Eposta</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="CurrentAccount.Email" class="form-control form-control-solid" placeholder="Eposta giriniz" />
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="CurrentAccount.Email"></span>
+                    </div>
+                    <!--end::Input group Email-->
+                    <!--begin::Col CompanyStatusId-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Firma Statüsü</label>
+                        <!--end::Label-->
+                        <!--begin::input-->
+                        <select asp-for="CurrentAccount.CompanyStatusId" asp-items="Html.GetEnumSelectList<CompanyStatusEnum>()" class="form-select form-select-solid fw-bolder">
+                            <option value="">Firma statüsünü seç...</option>
+                        </select>
+                        <!--end::input-->
+                        <span class="text-danger" asp-validation-for="CurrentAccount.CompanyStatusId"></span>
+                    </div>
+                    <!--end::Input group CompanyStatusId-->
+                </div>
+                <!--end::Input group Email & CompanyStatusId-->
+                <!--begin::Input group BankName & IBAN-->
+                <div class="row mb-7">
+                    <!--begin::Input group BankName-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="fs-6 fw-bold mb-2">Banka</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="CurrentAccount.BankName" class="form-control form-control-solid" placeholder="Banka adı girin" />
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="CurrentAccount.BankName"></span>
+                    </div>
+                    <!--end::Input group BankName-->
+                    <!--begin::Input group IBAN-->
+                    <div class="col-md-4 fv-row">
+                        <!--begin::Label-->
+                        <label class="fs-6 fw-bold mb-2">IBAN</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="CurrentAccount.IBAN" class="form-control form-control-solid" placeholder="IBAN giriniz" />
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="CurrentAccount.IBAN"></span>
+                    </div>
+                    <!--end::Input group IBAN-->
+                </div>
+                <!--end::Input group BankName & IBAN-->
+            </div>
+            <!--end::body-->
+            <!--begin::Modal footer-->
+            <div class="flex-center pt-10">
+                <!--begin::Button-->
+                <button type="submit" id="kt_upsert_vendors_submit" class="btn btn-primary">
+                    <span class="indicator-label">Kaydet</span>
+                    <span class="indicator-progress">
+                        Lütfen bekleyin...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                </button>
+                <!--end::Button-->
+                <!--begin::Button geridön-->
+                <a asp-action="Index" class="btn btn-white me-3">Geri Dön</a>
+                <!--end::Button-->
+            </div>
+            <!--end::Modal footer-->
+        </form>
+        <!--end::Form-->
+    </div>
+    <!--end::Card body-->
+</div>
+<!--end::Card-->
+
+
+
+@section PageScripts {
+    <!--begin::Page Vendors Javascript(used by this page)-->
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Page Vendors Javascript-->
+    <!--begin::Page Custom Javascript(used by this page)-->
+    <script src="/assets/js/custom/apps/vendor/upsert.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+} 

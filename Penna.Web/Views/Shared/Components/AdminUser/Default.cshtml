@@ -1,0 +1,84 @@
+﻿ 
+@{
+    AppUserInfoDto userInfo = ViewData["AppUserInfoDto"] as AppUserInfoDto;
+    if (userInfo != null)
+    {
+        <!--begin::Row-->
+        <div class="row mb-7">
+            <!--begin::Label-->
+            <label class="col-lg-4 fw-bold text-muted">TC Kimlik No</label>
+            <!--end::Label-->
+            <!--begin::Col-->
+            <div class="col-lg-8">
+                <span class="fw-bolder fs-6 text-dark">@userInfo.TCIdentityNo</span>
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Row-->
+        <!--begin::Row-->
+        <div class="row mb-7">
+            <!--begin::Label-->
+            <label class="col-lg-4 fw-bold text-muted">Ad Soyad</label>
+            <!--end::Label-->
+            <!--begin::Col-->
+            <div class="col-lg-8">
+                <span class="fw-bolder fs-6 text-dark">@userInfo.FullName</span>
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Row-->
+        <!--begin::Input group-->
+        <div class="row mb-7">
+            <!--begin::Label-->
+            <label class="col-lg-4 fw-bold text-muted">
+                Telefon
+            </label>
+            <!--end::Label-->
+            <!--begin::Col-->
+            <div class="col-lg-8 d-flex align-items-center">
+                <span class="fw-bolder fs-6 me-2">@userInfo.CountryDialCode - @userInfo.PhoneNumber</span>
+                <span class="badge badge-success">Doğrulandı</span>
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Input group-->
+        <!--begin::Input group-->
+        <div class="row mb-7">
+            <!--begin::Label-->
+            <label class="col-lg-4 fw-bold text-muted">Eposta</label>
+            <!--end::Label-->
+            <!--begin::Col-->
+            <div class="col-lg-8">
+                <a href="mailto:@userInfo.Email" class="fw-bold fs-6 text-dark text-hover-primary">@userInfo.Email</a>
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Input group-->
+        <!--begin::Input group-->
+        <div class="row mb-7">
+            <!--begin::Label-->
+            <label class="col-lg-4 fw-bold text-muted">Adres</label>
+            <!--end::Label-->
+            <!--begin::Col-->
+            <div class="col-lg-8 fv-row">
+                <p class="fw-bold fs-6">@userInfo.Address</p>
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Input group-->
+        <!--begin::Input group-->
+        <div class="row mb-10">
+            <!--begin::Label-->
+            <label class="col-lg-4 fw-bold text-muted">Durumu</label>
+            <!--begin::Label-->
+            <!--begin::Label-->
+            <div class="col-lg-8">
+                <span class="fw-bold fs-6">@(userInfo.Status ? "Aktif" : "Pasif")</span>
+            </div>
+            <!--begin::Label-->
+        </div>
+        <!--end::Input group-->
+        
+    }
+}
+

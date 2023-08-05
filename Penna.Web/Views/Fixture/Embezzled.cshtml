@@ -1,0 +1,189 @@
+﻿@model EmbezzledDto
+@{
+    ViewData["Title"] = "Demirbaş Zimmetleme";
+    var disabled = (Model.FixtureEmbezzled.FixtureId == 0) ? "disabled" : "";
+}
+
+@section Styles {
+    <!--begin::Page Vendor Stylesheets(used by this page)-->
+    <link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Page Vendor Stylesheets-->
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card border border-secondary">
+            <div class="card-body">
+                <h5>Demirbaş Zimmetle</h5>
+                <hr />
+                <form id="embezzledForm" method="post" asp-action="EmbezzledPost">
+
+                    @if (Model.FixtureEmbezzled.FixtureId != 0)
+                    {
+                        <input type="hidden" asp-for="FixtureEmbezzled.FixtureId" />
+                    }
+
+                    <div class="row g-2 mb-5">
+                        <label>Tarih</label>
+                        <input asp-for="FixtureEmbezzled.EmbezzledDate" class="form-control form-control-solid" required />
+                        <span asp-validation-for="FixtureEmbezzled.EmbezzledDate" class="text-danger"></span>
+                    </div>
+                    <div class="row g-2 mb-5">
+                        <label>Zimmetlenecek Ürün</label>
+                        <input type="text" asp-for="Fixture.ProductName" class="form-control form-control-solid" readonly />
+                        <input type="text" asp-for="Fixture.Description" class="form-control form-control-solid" readonly />
+                    </div>
+                    <div class="row g-2 mb-5">
+                        <label>Stok Miktarı</label>
+                        <input type="number" asp-for="Fixture.Quantity" class="form-control form-control-solid" readonly />
+                    </div>
+                    <div class="row g-2 mb-5">
+                        <label>Zimmetlenecek Miktar</label>
+                        <input type="number" asp-for="FixtureEmbezzled.Quantity" class="form-control form-control-solid" required />
+                        <span asp-validation-for="FixtureEmbezzled.Quantity" class="text-danger"></span>
+                    </div>
+                    <div class="row g-2 mb-5">
+                        <label>Zimmetlenecek Kişi</label>
+                        <select asp-for="FixtureEmbezzled.AppUserId" asp-items="@Model.AppUsers" class="form-select form-select-solid" required>
+                            <option value="">--- Zimmetlenecek Kişiyi Seç ---</option>
+                        </select>
+                        <span asp-validation-for="FixtureEmbezzled.AppUserId" class="text-danger"></span>
+                    </div>
+                    <div class="row g-2 mb-5">
+                        <label>Açıklama</label>
+                        <textarea asp-for="FixtureEmbezzled.Description" class="form-control form-control-solid" rows="2"></textarea>
+                        <span asp-validation-for="FixtureEmbezzled.Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="row g-2 mb-5">
+                        <button type="submit" class="btn btn-primary w-100 @disabled">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card border border-secondary">
+            <div class="card-body">
+                <h5>Kayıtlı Demirbaşlar</h5>
+                <hr />
+                <table id="fixtureTable" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ürün Adı</th>
+                            <th>Açıklama</th>
+                            <th>Miktar</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Fixtures.Count > 0)
+                        {
+                            foreach (var fixture in Model.Fixtures)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(model => fixture.Id)</td>
+                                    <td>@Html.DisplayFor(model => fixture.ProductName)</td>
+                                    <td>@Html.DisplayFor(model => fixture.Description)</td>
+                                    <td>@Html.DisplayFor(model => fixture.Quantity)</td>
+                                    <td>
+                                        <a asp-action="Embezzled" asp-route-id="@fixture.Id" class="btn btn-icon btn-sm btn-primary" title="zimmetle"><i class="fas fa-link"></i></a>
+                                        <a href="#" class="btn btn-icon btn-sm btn-success" title="zimmet listesi" data-fixture-link="@fixture.Id" data-kt-embezzled-table-filter="embezzled_list"><i class="fas fa-list"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--begin::Modal - Embezzled - List-->
+<div class="modal fade" id="kt_modal_list_embezzled" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Modal header-->
+            <div class="modal-header" id="kt_modal_list_embezzled_header">
+                <!--begin::Modal title-->
+                <h2 class="fw-bolder">Zimmet Listesi</h2>
+                <!--end::Modal title-->
+                <!--begin::Close-->
+                <div id="kt_modal_list_embezzled_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                    <!--begin::Svg Icon | path: icons/duotone/Navigation/Close.svg-->
+                    <span class="svg-icon svg-icon-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                            <g transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) translate(4.000000, 4.000000)" fill="#000000">
+                                <rect fill="#000000" x="0" y="7" width="16" height="2" rx="1" />
+                                <rect fill="#000000" opacity="0.5" transform="translate(8.000000, 8.000000) rotate(-270.000000) translate(-8.000000, -8.000000)" x="0" y="7" width="16" height="2" rx="1" />
+                            </g>
+                        </svg>
+                    </span>
+                    <!--end::Svg Icon-->
+                </div>
+                <!--end::Close-->
+            </div>
+            <!--end::Modal header-->
+            <!--begin::Modal body-->
+            <div class="modal-body py-10 px-lg-17">
+                <!--begin::Scroll-->
+                <div class="scroll-y me-n7 pe-7" id="kt_modal_list_embezzled_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_list_embezzled_header" data-kt-scroll-wrappers="#kt_modal_list_embezzled_scroll" data-kt-scroll-offset="300px">
+                    <table id="kt_modal_list_embezzled_table" class="table align-middle table-row-dashed table-striped table-sm fs-6 gy-1 w-100">
+                        <thead>
+                            <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
+                                <th class="min-w-100px">Zimmet Tarihi</th>
+                                <th class="min-w-150px">Zimmetlenen Kişi</th>
+                                <th class="min-w-80px">Zimmetlenen Adet</th>
+                                <th class="min-w-150px">Açıklama</th>
+                                @*<th class="min-w-100px">Dönüş Tarihi</th>*@
+                                <th class="min-w-80px"></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <!--end::Scroll-->
+            </div>
+            <!--end::Modal body-->
+            <!--begin::Modal footer-->
+            <div class="modal-footer flex-center">
+                <!--begin::Button-->
+                <button type="button" id="kt_modal_list_embezzled_cancel" class="btn btn-white me-3">Kapat</button>
+                <!--end::Button-->
+            </div>
+            <!--end::Modal footer-->
+        </div>
+    </div>
+</div>
+<!--end::Modal - Embezzled - List-->
+
+
+@section PageScripts {
+    <!--begin::Page Vendors Javascript(used by this page)-->
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Page Vendors Javascript-->
+    <!--begin::Page Custom Javascript(used by this page)-->
+    <script src="~/assets/js/custom/apps/fixture/list.js"></script>
+    <partial name="_ValidationScriptsPartial">
+        <script>
+            $("#FixtureEmbezzled_EmbezzledDate").flatpickr({
+                onReady: function () {
+                    this.jumpToDate(moment().format("DD-MM-YYYY"))
+                },
+                locale: Turkish,
+                dateFormat: "d-m-Y",
+                defaultDate: moment().format("DD-MM-YYYY")
+            });
+        </script>
+}
+
+

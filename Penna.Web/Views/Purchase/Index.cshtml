@@ -1,0 +1,701 @@
+﻿@model PurchaseDto
+@{
+    ViewData["Title"] = Toolbar.Title;
+}
+
+@section Styles {
+    <!--begin::Page Vendor Stylesheets(used by this page)-->
+    <link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Page Vendor Stylesheets-->
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+
+<div class="card">
+    <!--begin::Card header-->
+    <div class="card-header border-0 pt-6">
+        <!--begin::Card title-->
+        <div class="card-title">
+            <!--begin::Search-->
+            <div class="d-flex align-items-center position-relative my-1">
+                <!--begin::Svg Icon | path: icons/duotone/General/Search.svg-->
+                <span class="svg-icon svg-icon-1 position-absolute ms-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <rect x="0" y="0" width="24" height="24" />
+                            <path d="M14.2928932,16.7071068 C13.9023689,16.3165825 13.9023689,15.6834175 14.2928932,15.2928932 C14.6834175,14.9023689 15.3165825,14.9023689 15.7071068,15.2928932 L19.7071068,19.2928932 C20.0976311,19.6834175 20.0976311,20.3165825 19.7071068,20.7071068 C19.3165825,21.0976311 18.6834175,21.0976311 18.2928932,20.7071068 L14.2928932,16.7071068 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
+                            <path d="M11,16 C13.7614237,16 16,13.7614237 16,11 C16,8.23857625 13.7614237,6 11,6 C8.23857625,6 6,8.23857625 6,11 C6,13.7614237 8.23857625,16 11,16 Z M11,18 C7.13400675,18 4,14.8659932 4,11 C4,7.13400675 7.13400675,4 11,4 C14.8659932,4 18,7.13400675 18,11 C18,14.8659932 14.8659932,18 11,18 Z" fill="#000000" fill-rule="nonzero" />
+                        </g>
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->
+                <input type="text" data-kt-purchases-table-filter="search" class="form-control form-control-solid w-250px ps-15" placeholder="Satın Alma Talebi Ara" />
+            </div>
+            <!--end::Search-->
+        </div>
+        <!--begin::Card title-->
+        <!--begin::Card toolbar-->
+        <div class="card-toolbar d-none">
+            <!--begin::Toolbar-->
+            <div class="d-flex justify-content-end" data-kt-projects-table-toolbar="base">
+                <div class="p-2">
+                    <ul class="list-group list-group-horizontal-sm">
+                        <a style="text-decoration:none" asp-controller="Project" asp-route-status="active" asp-action="Index">
+                            <li class="list-group-item">Aktif</li>
+                        </a>
+                        <a style="text-decoration:none" asp-controller="Project" asp-route-status="finished" asp-action="Index">
+                            <li class="list-group-item">Bitenler</li>
+                        </a>
+                        <a style="text-decoration:none" asp-controller="Project" asp-route-status="all" asp-action="Index">
+                            <li class="list-group-item">Hepsi</li>
+                        </a>
+                    </ul>
+                </div>
+            </div>
+            <a asp-action="Upsert" class="btn btn-sm btn-danger"><i class="far fa-plus-square"></i> Yeni Proje</a>
+            <!--end::Toolbar-->
+        </div>
+        <!--end::Card toolbar-->
+    </div>
+    <!--end::Card header-->
+    <div class="card-body pt-0">
+        <div class="table-responsive">
+            <table id="kt_purchase_requested_table" class="table table-striped table-row-bordered gy-5 gs-7 border">
+                <thead>
+                    <tr class="fw-bolder fs-6 text-gray-800 px-7">
+                        <th>Tarih</th>
+                        <th>Ürün Adı</th>
+                        <th>Talep Miktarı</th>
+                        <th>Kalan Miktar</th>
+                        <th>Termin Tarihi</th>
+                        <th>Not</th>
+                        <th>Öncelik</th>
+                        <th><!--Doğrudan,Teklif,ihale 3 adet satın alma butonu gelecek--></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!--begin::Modal - Doğrudan Satın Alma -->
+<div class="modal fade" id="kt_modal_add_direct_purchase" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered mw-650px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Form-->
+            <form class="form" action="#" method="post" id="kt_modal_add_direct_purchase_form" data-kt-redirect="/SaveDirectPurchase">
+                <input type="hidden" asp-for="Purchase.PurchaseRequestId" />
+                <input type="hidden" id="RemainingQuantity" />
+                <!--begin::Modal header-->
+                <div class="modal-header" id="kt_modal_add_direct_purchase_header">
+                    <!--begin::Modal title-->
+                    <h2 class="fw-bolder">Doğrudan Satın Alma Yap</h2>
+                    <!--end::Modal title-->
+                    <!--begin::Close-->
+                    <div id="kt_modal_add_direct_purchase_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                        <!--begin::Svg Icon | path: icons/duotone/Navigation/Close.svg-->
+                        <span class="svg-icon svg-icon-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                <g transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) translate(4.000000, 4.000000)" fill="#000000">
+                                    <rect fill="#000000" x="0" y="7" width="16" height="2" rx="1" />
+                                    <rect fill="#000000" opacity="0.5" transform="translate(8.000000, 8.000000) rotate(-270.000000) translate(-8.000000, -8.000000)" x="0" y="7" width="16" height="2" rx="1" />
+                                </g>
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </div>
+                    <!--end::Close-->
+                </div>
+                <!--end::Modal header-->
+                <!--begin::Modal body-->
+                <div class="modal-body py-10 px-lg-17">
+                    <!--begin::Scroll-->
+                    <div class="scroll-y me-n7 pe-7" id="kt_modal_add_direct_purchase_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_direct_purchase_header" data-kt-scroll-wrappers="#kt_modal_add_direct_purchase_scroll" data-kt-scroll-offset="300px">
+                        <!--begin::Input group PurchaseDate-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Tarih</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" asp-for="Purchase.PurchaseDate" class="form-control form-control-solid" />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group PurchaseDate-->
+                        <!--begin::Input group ProductId-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Alınacak Malzeme</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <select asp-for="Purchase.ProductId" asp-items="Model.ProductList" class="form-select form-select-solid">
+                                <option value="">---Malzeme Seç---</option>
+                            </select>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group ProductId-->
+                        <!--begin::Input group Quantity-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Miktarı</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" asp-for="Purchase.Quantity" class="form-control form-control-solid" placeholder="Miktar giriniz" />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group Quantity-->
+                        <!--begin::Input group RequestedDeliveryDate-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Talep Edilen Teslim Tarihi</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" asp-for="Purchase.RequestedDeliveryDate" class="form-control form-control-solid" />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group RequestedDeliveryDate-->
+                        <!--begin::Input group BlockId-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Talep Edilen Birim</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <select asp-for="Purchase.RequestedBlockId" asp-items="Model.BlockList" class="form-select form-select-solid">
+                                <option value="">---Birim Seç---</option>
+                            </select>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group BlockId-->
+                        <!--begin::Input group RequestedPlace-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="fs-6 fw-bold mb-2">Talep Edilen Yer</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" asp-for="Purchase.RequestedPlace" class="form-control form-control-solid" placeholder="Talep edilen yer giriniz" readonly="readonly" />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group RequestedPlace-->
+                        <!--begin::Input group Description-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="fs-6 fw-bold mb-2">Açıklama</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <textarea asp-for="Purchase.Description" class="form-control form-control-solid" rows="2" placeholder="Açıklama giriniz"></textarea>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group Description-->
+                        <!--begin::Input group Tedarikçi Grubu-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Tedarikçi Grubu</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <select id="BusinessGroupId" name="BusinessGroupId" asp-items="@Html.GetEnumSelectList<BusinessGroupEnum>()" class="form-select form-select-solid">
+                                <option value="">--- İş Grubu Seç ---</option>
+                            </select>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group Tedarikçi Grubu-->
+                        <!--begin::Input group SupplierCurrentAccountId-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Tedarikçiler</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <select asp-for="Purchase.SupplierCurrentAccountId" asp-items="Model.SupplierList" class="form-select form-select-solid" data-control="select2" data-allow-clear="true" multiple="multiple">
+                                <option value="">---Tedarikçi Seç---</option>
+                            </select>
+                            <!--end::Input-->
+                            <span asp-validation-for="Purchase.SupplierCurrentAccountId" class="text-danger"></span>
+                        </div>
+                        <!--end::Input group SupplierCurrentAccountId-->
+
+
+                        <div id="direct_purchase_div" class="bg-light-primary p-5 border border-gray-400">
+                            <!--begin::Input group Invoice Date-->
+                            <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Fatura Tarihi</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="Purchase.InvoiceDate" class="form-control form-control-solid" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group InvoiceDate-->
+                            <!--begin::Input group InvoiceNo-->
+                            <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">FaturaNo</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="Purchase.InvoiceNo" class="form-control form-control-solid" placeholder="Fatura no giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group InvoiceNo-->
+                            <!--begin::Input group InvoiceAmount-->
+                            <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Fatura Tutarı</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="Purchase.InvoiceAmount" class="form-control form-control-solid" placeholder="Fatura tutarı giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group InvoiceAmount-->
+                            <!--begin::Input group Deadline-->
+                            <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Termin Tarihi</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="Purchase.Deadline" class="form-control form-control-solid" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group Deadline-->
+                        </div>
+
+                        <div id="offer_tender_div" class="bg-light-primary p-5 border border-gray-400">
+
+                            <!--begin::Input group FinalBidDateTime-->
+                            <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2"><span id="offer_tender_span">Teklif</span> Bitiş Tarih ve Saati</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="Purchase.FinalBidDateTime" class="form-control form-control-solid" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group FinalBidDateTime-->
+                        </div>
+
+                    </div>
+                    <!--end::Scroll-->
+                </div>
+                <!--end::Modal body-->
+                <!--begin::Modal footer-->
+                <div class="modal-footer flex-center">
+                    <!--begin::Button-->
+                    <button type="reset" id="kt_modal_add_direct_purchase_cancel" class="btn btn-white me-3">Vazgeç</button>
+                    <!--end::Button-->
+                    <!--begin::Button-->
+                    <button type="submit" id="kt_modal_add_direct_purchase_submit" class="btn btn-primary">
+                        <span class="indicator-label">Kaydet</span>
+                        <span class="indicator-progress">
+                            Lütfen bekleyin...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
+                    <!--end::Button-->
+                </div>
+                <!--end::Modal footer-->
+            </form>
+            <!--end::Form-->
+        </div>
+    </div>
+</div>
+<!--end::Modal - Doğrudan Satın Alma-->
+<!--begin::Modal - Teklif Usulü Satın Alma -->
+<div class="modal fade" id="kt_modal_add_offer_purchase" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered mw-650px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Form-->
+            <form class="form" action="#" method="post" id="kt_modal_add_offer_purchase_form" data-kt-redirect="/SaveOfferPurchase">
+                <input type="hidden" asp-for="Purchase.PurchaseRequestId" />
+                <input type="hidden" id="RemainingQuantity" />
+                <!--begin::Modal header-->
+                <div class="modal-header" id="kt_modal_add_offer_purchase_header">
+                    <!--begin::Modal title-->
+                    <h2 class="fw-bolder">Teklif Usulü Satın Alma Yap</h2>
+                    <!--end::Modal title-->
+                    <!--begin::Close-->
+                    <div id="kt_modal_add_offer_purchase_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                        <!--begin::Svg Icon | path: icons/duotone/Navigation/Close.svg-->
+                        <span class="svg-icon svg-icon-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                <g transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) translate(4.000000, 4.000000)" fill="#000000">
+                                    <rect fill="#000000" x="0" y="7" width="16" height="2" rx="1" />
+                                    <rect fill="#000000" opacity="0.5" transform="translate(8.000000, 8.000000) rotate(-270.000000) translate(-8.000000, -8.000000)" x="0" y="7" width="16" height="2" rx="1" />
+                                </g>
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </div>
+                    <!--end::Close-->
+                </div>
+                <!--end::Modal header-->
+                <!--begin::Modal body-->
+                <div class="modal-body py-10 px-lg-17">
+                    <!--begin::Scroll-->
+                    <div class="scroll-y me-n7 pe-7" id="kt_modal_add_offer_purchase_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_offer_purchase_header" data-kt-scroll-wrappers="#kt_modal_add_offer_purchase_scroll" data-kt-scroll-offset="300px">
+                        <!--begin::Input group PurchaseDate-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Tarih</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" asp-for="Purchase.PurchaseDate" class="form-control form-control-solid" />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group PurchaseDate-->
+                        <!--begin::Input group ProductId-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Alınacak Malzeme</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <select asp-for="Purchase.ProductId" asp-items="Model.ProductList" class="form-select form-select-solid">
+                                <option value="">---Malzeme Seç---</option>
+                            </select>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group ProductId-->
+                        <!--begin::Input group Quantity-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Miktarı</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" asp-for="Purchase.Quantity" class="form-control form-control-solid" placeholder="Miktar giriniz" />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group Quantity-->
+                        <!--begin::Input group RequestedDeliveryDate-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Talep Edilen Teslim Tarihi</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" asp-for="Purchase.RequestedDeliveryDate" class="form-control form-control-solid" />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group RequestedDeliveryDate-->
+                        <!--begin::Input group BlockId-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Talep Edilen Birim</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <select asp-for="Purchase.RequestedBlockId" asp-items="Model.BlockList" class="form-select form-select-solid">
+                                <option value="">---Birim Seç---</option>
+                            </select>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group BlockId-->
+                        <!--begin::Input group RequestedPlace-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="fs-6 fw-bold mb-2">Talep Edilen Yer</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" asp-for="Purchase.RequestedPlace" class="form-control form-control-solid" placeholder="Talep edilen yer giriniz" readonly="readonly" />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group RequestedPlace-->
+                        <!--begin::Input group Description-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="fs-6 fw-bold mb-2">Açıklama</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <textarea asp-for="Purchase.Description" class="form-control form-control-solid" rows="2" placeholder="Açıklama giriniz"></textarea>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group Description-->
+                        <!--begin::Input group Tedarikçi Grubu-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Tedarikçi Grubu</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <select id="BusinessGroupId" name="BusinessGroupId" asp-items="@Html.GetEnumSelectList<BusinessGroupEnum>()" class="form-select form-select-solid">
+                                <option value="">--- İş Grubu Seç ---</option>
+                            </select>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group Tedarikçi Grubu-->
+                        <!--begin::Input group SupplierCurrentAccountId multiple-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Tedarikçiler</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <select asp-for="Purchase.SupplierCurrentAccountId" asp-items="Model.SupplierList" class="form-select form-select-solid" data-control="select2" data-allow-clear="true" multiple="multiple">
+                                <option value="">---Tedarikçi Seç---</option>
+                            </select>
+                            <!--end::Input-->
+                            <span asp-validation-for="Purchase.SupplierCurrentAccountId" class="text-danger"></span>
+                        </div>
+                        <!--end::Input group SupplierCurrentAccountId multiple-->
+                        <!--begin::Input group FinalBidDateTime-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2"><span id="offer_tender_span">Teklif</span> Bitiş Tarih ve Saati</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" asp-for="Purchase.FinalBidDateTime" class="form-control form-control-solid" />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group FinalBidDateTime-->
+                    </div>
+                    <!--end::Scroll-->
+                </div>
+                <!--end::Modal body-->
+                <!--begin::Modal footer-->
+                <div class="modal-footer flex-center">
+                    <!--begin::Button-->
+                    <button type="reset" id="kt_modal_add_offer_purchase_cancel" class="btn btn-white me-3">Vazgeç</button>
+                    <!--end::Button-->
+                    <!--begin::Button-->
+                    <button type="submit" id="kt_modal_add_offer_purchase_submit" class="btn btn-primary">
+                        <span class="indicator-label">Kaydet</span>
+                        <span class="indicator-progress">
+                            Lütfen bekleyin...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
+                    <!--end::Button-->
+                </div>
+                <!--end::Modal footer-->
+            </form>
+            <!--end::Form-->
+        </div>
+    </div>
+</div>
+<!--end::Modal - Teklif Usulü Satın Alma -->
+<!--begin::Modal - Teklif Usulü Satın Alma -->
+<div class="modal fade" id="kt_modal_add_tender_purchase" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered mw-650px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Form-->
+            <form class="form" action="#" method="post" id="kt_modal_add_tender_purchase_form" data-kt-redirect="/SaveTenderPurchase">
+                <input type="hidden" asp-for="Purchase.PurchaseRequestId" />
+                <input type="hidden" id="RemainingQuantity" />
+                <!--begin::Modal header-->
+                <div class="modal-header" id="kt_modal_add_tender_purchase_header">
+                    <!--begin::Modal title-->
+                    <h2 class="fw-bolder">İhale Usulü Satın Alma Yap</h2>
+                    <!--end::Modal title-->
+                    <!--begin::Close-->
+                    <div id="kt_modal_add_tender_purchase_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                        <!--begin::Svg Icon | path: icons/duotone/Navigation/Close.svg-->
+                        <span class="svg-icon svg-icon-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                <g transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) translate(4.000000, 4.000000)" fill="#000000">
+                                    <rect fill="#000000" x="0" y="7" width="16" height="2" rx="1" />
+                                    <rect fill="#000000" opacity="0.5" transform="translate(8.000000, 8.000000) rotate(-270.000000) translate(-8.000000, -8.000000)" x="0" y="7" width="16" height="2" rx="1" />
+                                </g>
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </div>
+                    <!--end::Close-->
+                </div>
+                <!--end::Modal header-->
+                <!--begin::Modal body-->
+                <div class="modal-body py-10 px-lg-17">
+                    <!--begin::Scroll-->
+                    <div class="scroll-y me-n7 pe-7" id="kt_modal_add_tender_purchase_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_tender_purchase_header" data-kt-scroll-wrappers="#kt_modal_add_tender_purchase_scroll" data-kt-scroll-offset="300px">
+                        <!--begin::Input group PurchaseDate-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Tarih</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" asp-for="Purchase.PurchaseDate" class="form-control form-control-solid" />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group PurchaseDate-->
+                        <!--begin::Input group ProductId-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Alınacak Malzeme</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <select asp-for="Purchase.ProductId" asp-items="Model.ProductList" class="form-select form-select-solid">
+                                <option value="">---Malzeme Seç---</option>
+                            </select>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group ProductId-->
+                        <!--begin::Input group Quantity-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Miktarı</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" asp-for="Purchase.Quantity" class="form-control form-control-solid" placeholder="Miktar giriniz" />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group Quantity-->
+                        <!--begin::Input group RequestedDeliveryDate-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Talep Edilen Teslim Tarihi</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" asp-for="Purchase.RequestedDeliveryDate" class="form-control form-control-solid" />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group RequestedDeliveryDate-->
+                        <!--begin::Input group BlockId-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Talep Edilen Birim</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <select asp-for="Purchase.RequestedBlockId" asp-items="Model.BlockList" class="form-select form-select-solid">
+                                <option value="">---Birim Seç---</option>
+                            </select>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group BlockId-->
+                        <!--begin::Input group RequestedPlace-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="fs-6 fw-bold mb-2">Talep Edilen Yer</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" asp-for="Purchase.RequestedPlace" class="form-control form-control-solid" placeholder="Talep edilen yer giriniz" readonly="readonly" />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group RequestedPlace-->
+                        <!--begin::Input group Description-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="fs-6 fw-bold mb-2">Açıklama</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <textarea asp-for="Purchase.Description" class="form-control form-control-solid" rows="2" placeholder="Açıklama giriniz"></textarea>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group Description-->
+                        <!--begin::Input group Tedarikçi Grubu-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Tedarikçi Grubu</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <select id="BusinessGroupId" name="BusinessGroupId" asp-items="@Html.GetEnumSelectList<BusinessGroupEnum>()" class="form-select form-select-solid">
+                                <option value="">--- İş Grubu Seç ---</option>
+                            </select>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group Tedarikçi Grubu-->
+                        <!--begin::Input group SupplierCurrentAccountId multiple-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">Tedarikçiler</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <select asp-for="Purchase.SupplierCurrentAccountId" asp-items="Model.SupplierList" class="form-select form-select-solid" data-control="select2" data-allow-clear="true" multiple="multiple">
+                                <option value="">---Tedarikçi Seç---</option>
+                            </select>
+                            <!--end::Input-->
+                            <span asp-validation-for="Purchase.SupplierCurrentAccountId" class="text-danger"></span>
+                        </div>
+                        <!--end::Input group SupplierCurrentAccountId multiple-->
+                        <!--begin::Input group FinalBidDateTime-->
+                        <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2"><span id="tender_tender_span">Teklif</span> Bitiş Tarih ve Saati</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" asp-for="Purchase.FinalBidDateTime" class="form-control form-control-solid" />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group FinalBidDateTime-->
+                    </div>
+                    <!--end::Scroll-->
+                </div>
+                <!--end::Modal body-->
+                <!--begin::Modal footer-->
+                <div class="modal-footer flex-center">
+                    <!--begin::Button-->
+                    <button type="reset" id="kt_modal_add_tender_purchase_cancel" class="btn btn-white me-3">Vazgeç</button>
+                    <!--end::Button-->
+                    <!--begin::Button-->
+                    <button type="submit" id="kt_modal_add_tender_purchase_submit" class="btn btn-primary">
+                        <span class="indicator-label">Kaydet</span>
+                        <span class="indicator-progress">
+                            Lütfen bekleyin...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
+                    <!--end::Button-->
+                </div>
+                <!--end::Modal footer-->
+            </form>
+            <!--end::Form-->
+        </div>
+    </div>
+</div>
+<!--end::Modal - Teklif Usulü Satın Alma -->
+
+@section PageScripts {
+    <!--begin::Page Vendors Javascript(used by this page)-->
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Page Vendors Javascript-->
+    <!--begin::Page Custom Javascript(used by this page)-->
+    <script src="~/assets/js/custom/apps/purchase/list.js"></script>
+    <script src="~/assets/js/custom/apps/purchase/add-direct-purchase.js"></script>
+    <script src="~/assets/js/custom/apps/purchase/add-offer-purchase.js"></script>
+    <script src="~/assets/js/custom/apps/purchase/add-tender-purchase.js"></script>
+    <script>
+        $("#Purchase_PurchaseDate").flatpickr({
+            onReady: function () {
+                this.jumpToDate(moment().format("DD-MM-YYYY"))
+            },
+            locale: Turkish,
+            dateFormat: "d-m-Y",
+            defaultDate: moment().format("DD-MM-YYYY")
+        });
+        $("#Purchase_RequestedDeliveryDate").flatpickr({
+            onReady: function () {
+                this.jumpToDate(moment().format("DD-MM-YYYY"))
+            },
+            locale: Turkish,
+            dateFormat: "d-m-Y",
+            defaultDate: moment().format("DD-MM-YYYY")
+        });
+        $("#Purchase_InvoiceDate").flatpickr({
+            onReady: function () {
+                this.jumpToDate(moment().format("DD-MM-YYYY"))
+            },
+            locale: Turkish,
+            dateFormat: "d-m-Y",
+            defaultDate: moment().format("DD-MM-YYYY")
+        });
+        $("#Purchase_Deadline").flatpickr({
+            onReady: function () {
+                this.jumpToDate(moment().format("DD-MM-YYYY"))
+            },
+            locale: Turkish,
+            dateFormat: "d-m-Y",
+            defaultDate: moment().format("DD-MM-YYYY")
+        });
+
+        $("#Purchase_FinalBidDateTime").flatpickr({
+            onReady: function () {
+                this.jumpToDate(moment().format("DD-MM-YYYY"))
+            },
+            locale: Turkish,
+            enableTime: true,
+            dateFormat: "d-m-Y H:i",
+            minDate: "today",
+            time_24hr: true,
+            defaultDate: moment().format("DD-MM-YYYY HH:mm")
+        });
+
+    </script>
+}

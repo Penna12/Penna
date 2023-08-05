@@ -1,0 +1,124 @@
+﻿@model PurchaseRequestDto
+
+@{
+    ViewData["Title"] = Toolbar.Title;
+}
+
+@section Styles {
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+
+@if (TempData["message"] != null)
+{
+    <div class="card">
+        <div class="card-body">
+            <div class="alert alert-info">
+                @Html.Raw(TempData["message"].ToString())
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <form id="kt_purchase_send_request_form" asp-action="SendRequest" method="post">
+
+                <div class="row mb-7">
+                    <div class="col-md-6 fv-row">
+                        <label class="fs-6 fw-bold mb-2">Malzeme</label>
+                        <select asp-for="PurchaseRequest.ProductId" asp-items="@Model.ProductList" class="form-select form-select-solid" data-control="select2">
+                            <option value="">--- Ürün Seçiniz ---</option>
+                        </select>
+                        <span class="text-danger" asp-validation-for="PurchaseRequest.ProductId"></span>
+                    </div>
+                    <div class="col-md-6 fv-row">
+                        <label class="fs-6 fw-bold mb-2"> Miktarı</label>
+                        <input type="number" asp-for="PurchaseRequest.Quantity" class="form-control form-control-solid" />
+                        <span class="text-danger" asp-validation-for="PurchaseRequest.Quantity"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-7">
+                    <div class="col-md-6 fv-row">
+                        <label class="fs-6 fw-bold mb-2">Marka</label>
+                        <input type="text" id="Brand" class="form-control form-control-solid" readonly />
+                    </div>
+                    <div class="col-md-6 fv-row">
+                        <label class="fs-6 fw-bold mb-2">Termin Talebi</label>
+                        <input type="text" asp-for="PurchaseRequest.Deadline" class="form-control form-control-solid" />
+                        <span class="text-danger" asp-validation-for="PurchaseRequest.Deadline"></span>
+                    </div>
+                </div>
+                <div class="row mb-7 fv-row">
+                    <div class="col-md-6">
+                        <label class="fs-6 fw-bold mb-2">Birim</label>
+                        <input type="text" id="Unit" class="form-control form-control-solid" readonly />
+                    </div>
+                    <div class="col-md-6 fv-row">
+                        <label class="fs-6 fw-bold mb-2">Açıklama</label>
+                        <textarea asp-for="PurchaseRequest.Description" class="form-control form-control-solid" rows="3"></textarea>
+                        <span class="text-danger" asp-validation-for="PurchaseRequest.Description"></span>
+                    </div>
+                </div>
+                <div class="row mb-7 fv-row">
+                    <div class="col-md-6">
+                        <label class="fs-6 fw-bold mb-2">Stoktaki Miktar</label>
+                        <input type="number" id="Quantity" class="form-control form-control-solid" readonly />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="fs-6 fw-bold mb-2">Öncelik Durumu</label>
+                        <select asp-for="PurchaseRequest.Priority" asp-items="@Html.GetEnumSelectList<PriorityEnum>()" class="form-select form-select-solid"></select>
+                    </div>
+                </div>
+                <div class="row mb-7 fv-row">
+                    <div class="col-md-6">
+                        <label class="fs-6 fw-bold mb-2">Ebat (En-Boy)</label>
+                        <input type="text" id="Dimensions" class="form-control form-control-solid" readonly />
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                    </div>
+                </div>
+                <div class="row mb-7 fv-row">
+                    <div class="col-md-6">
+                        <label class="fs-6 fw-bold mb-2">Kalınlık</label>
+                        <input type="text" id="Thickness" class="form-control form-control-solid" readonly />
+                    </div>
+                </div>
+                <div class="row mb-7 fv-row">
+                    <div class="col-md-6">
+                        <label class="fs-6 fw-bold mb-2">Tür/Cins</label>
+                        <input type="text" id="Species" class="form-control form-control-solid" readonly />
+                    </div>
+                </div>
+                <div class="row mb-7 fv-row">
+                    <div class="col-md-6">
+                        <label class="fs-6 fw-bold mb-2">İş Grubu</label>
+                        <input type="text" id="BusinessGroupId" class="form-control form-control-solid" readonly />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+
+@section PageScripts {
+    <script src="~/assets/js/custom/apps/purchase/get-product.js"></script>
+    <partial name="_ValidationScriptsPartial">
+        <script>
+            $("#PurchaseRequest_Deadline").flatpickr({
+                onReady: function () {
+                    this.jumpToDate(moment().format("DD-MM-YYYY"))
+                },
+                locale: Turkish,
+                dateFormat: "d-m-Y",
+                defaultDate: moment().format("DD-MM-YYYY")
+            });
+        </script>
+}

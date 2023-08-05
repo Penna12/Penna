@@ -1,0 +1,46 @@
+﻿@model Product
+
+<div class="card">
+    <div class="card-header">
+        <h3>Malzeme Kaydı Oluştur</h3>
+    </div>
+
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Brand"></label>
+                <input asp-for="Brand" class="form-control" />
+                <span asp-validation-for="Brand" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Unit"></label>
+                <input asp-for="Unit" class="form-control" />
+                <span asp-validation-for="Unit" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        <p>Validation test</p>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function no_toolbar() {
+        $("body").removeClass("header-fixed toolbar-fixed");
+        $("#kt_toolbar_container").addClass("d-none");
+    }
+    //no_toolbar();
+</script>
+    <partial name="_ValidationScriptsPartial" />
+}

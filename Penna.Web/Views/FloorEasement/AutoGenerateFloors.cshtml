@@ -1,0 +1,165 @@
+﻿@model BlockDto
+
+@{
+    ViewData["Title"] = "Otomatik kat irtifakı kur";
+}
+
+@section Styles {
+    <!--begin::Page Vendor Stylesheets(used by this page)-->
+    <link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Page Vendor Stylesheets-->
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-body pt-9 pb-0">
+        <div class="row mb-5">
+            <div class="col-md-3">Adı: <span class="text-gray-400 px-3">@Model.Block.Name</span></div>
+            <div class="col-md-3">Kat Sayısı : <span class="text-gray-400 px-3">@Model.Block.FloorCount</span></div>
+            <div class="col-md-3">Bodrum Kat Sayısı : <span class="text-gray-400 px-3">@Model.Block.BasementCount</span></div>
+            <div class="col-md-3">Kat Başına Bağımsız Bölüm : <span class="text-gray-400 px-3">@Model.Block.ApartmentCount</span></div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex flex-column flex-lg-row">
+    <div class="flex-lg-auto w-lg-300px me-xl-10">
+        <div class="card">
+            <!--begin::Card body-->
+            <div class="card-body p-10">
+                <form id="kt_floor_auto_generate_form" class="form-horizontal" method="post">
+                    <!--begin::Input group FloorCount-->
+                    <div class="row fv-row mb-2">
+                        <!--begin::Label-->
+                        <label class="col-md-8 fs-6 fw-bold mt-2">Oluşacak Kat Sayısı</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <div class="col-md-4">
+                            <input type="number" name="FloorCount" class="form-control form-control-solid form-control-sm" />
+                        </div>
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group FloorCount-->
+                    <!--begin::Input group StartFloorNo-->
+                    <div class="row fv-row mb-2">
+                        <!--begin::Label-->
+                        <label class="col-md-8 fs-6 fw-bold mt-2">Başlanacak Kat No</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <div class="col-md-4"><input type="number" name="StartFloorNo" class="form-control form-control-solid form-control-sm" /></div>
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group StartFloorNo-->
+                    <!--begin::Input group NumberOfHousesOnEachFloor-->
+                    <div class="row fv-row mb-2">
+                        <!--begin::Label-->
+                        <label class="col-md-8 fs-6 fw-bold mt-23">Her Kattaki Daire Sayısı</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <div class="col-md-4"><input type="number" name="NumberOfHousesOnEachFloor" class="form-control form-control-solid form-control-sm" /></div>
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group NumberOfHousesOnEachFloor-->
+                    <!--begin::Input group StartApartmentNo-->
+                    <div class="row fv-row mb-2">
+                        <!--begin::Label-->
+                        <label class="col-md-8 fs-6 fw-bold mt-2">Başlanacak Daire No</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <div class="col-md-4"><input type="number" name="StartApartmentNo" class="form-control form-control-solid form-control-sm" /></div>
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group StartApartmentNo-->
+
+                    <div class="pt-10 pb-lg-5 ">
+                        <!--begin::Title-->
+                        <h2 class="fw-bolder text-dark underline underline-gray">Dairelerin statik özellikleri (m2)</h2>
+                        <!--end::Title-->
+                    </div>
+                    <!--begin::Input group Gross-->
+                    <div class="row fv-row mb-2">
+                        <!--begin::Label-->
+                        <label class="col-md-6 fs-6 fw-bold mt-2">Brüt</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <div class="col-md-6"><input type="number" name="Gross" class="form-control form-control-solid form-control-sm" /></div>
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group Gross-->
+                    <!--begin::Input group Net-->
+                    <div class="row fv-row mb-2">
+                        <!--begin::Label-->
+                        <label class="col-md-6 fs-6 fw-bold mt-2">Net</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <div class="col-md-6"><input type="number" name="Net" class="form-control form-control-solid form-control-sm" /></div>
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group Net-->
+                    <!--begin::Input group Gabari-->
+                    <div class="row fv-row mb-2">
+                        <!--begin::Label-->
+                        <label class="col-md-6 fs-6 fw-bold mt-2">Gabari</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <div class="col-md-6"><input type="number" name="Gabari" class="form-control form-control-solid form-control-sm" /></div>
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group Gabari-->
+                    <!--begin::Form Buttons-->
+                    <div class="mb-7">
+                        <!--begin::Button-->
+                        <button type="submit" id="kt_floor_auto_generate_submit" class="btn btn-primary w-100">
+                            <i class="fas fa-cogs fs-2x"></i>
+                            <span class="indicator-label">Daireleri Oluştur</span>
+                            <span class="indicator-progress">
+                                Lütfen bekleyin...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span>
+                        </button>
+                        <!--end::Button-->
+                    </div>
+                    <!--end::Form Buttons-->
+                </form>
+
+            </div>
+            <!--end::Card body-->
+        </div>
+    </div>
+    <div class="flex-grow-1 mb-10">
+        <div class="card">
+            <!--begin::Card body-->
+            <div class="card-body p-12">
+                <!--begin::Table-->
+                <table id="kt_floor_table" class="table table-bordered table-striped table-light">
+                    <thead>
+                        <tr>
+                            <th>Kat No</th>
+                            <th>Bölüm</th>
+                            <th>Brüt m2</th>
+                            <th>Net m2</th>
+                            <th>Gabari m2</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <!--end::Table-->
+            </div>
+            <!--end::Card body-->
+        </div>
+    </div>
+</div>
+
+
+@section PageScripts {
+    <!--begin::Page Vendors Javascript(used by this page)-->
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Page Vendors Javascript-->
+    <!--begin::Page Custom Javascript(used by this page)-->
+    <script src="~/assets/js/custom/apps/floor-easement/list-generate.js"></script>
+    <script src="~/assets/js/custom/apps/floor-easement/add-generate.js"></script>
+}

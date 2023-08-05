@@ -1,0 +1,581 @@
+﻿@model ProjectDto
+@{
+    ViewData["Title"] = "Proje Giriş-Güncelleme";
+}
+
+@section Styles {
+    <style>
+        .underline {
+            display: block;
+            line-height: 2.5rem;
+        }
+
+        .underline-primary {
+            border-bottom: 1px solid #009ef7;
+        }
+
+        .underline-gray {
+            border-bottom: 2px solid #e0e0e0;
+        }
+    </style>
+}
+
+<div class="card">
+    <div class="card-header border-0 pt-10">
+        <h2 class="fw-bolder">
+            @if (Model.Project.Id > 0)
+            {<span>Proje Güncelleme</span> }
+            else
+            { <span>Yeni Proje Ekleme</span>}
+        </h2>
+        <span class="flex-lg-row">
+            <a asp-action="Index" asp-route-status="all" class="btn btn-sm btn-flex btn-light-primary px-6">
+                <!--begin::Svg Icon | path: assets/media/icons/duotune/general/gen050.svg-->
+                <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path opacity="0.3" d="M20.5543 4.37824L12.1798 2.02473C12.0626 1.99176 11.9376 1.99176 11.8203 2.02473L3.44572 4.37824C3.18118 4.45258 3 4.6807 3 4.93945V13.569C3 14.6914 3.48509 15.8404 4.4417 16.984C5.17231 17.8575 6.18314 18.7345 7.446 19.5909C9.56752 21.0295 11.6566 21.912 11.7445 21.9488C11.8258 21.9829 11.9129 22 12.0001 22C12.0872 22 12.1744 21.983 12.2557 21.9488C12.3435 21.912 14.4326 21.0295 16.5541 19.5909C17.8169 18.7345 18.8277 17.8575 19.5584 16.984C20.515 15.8404 21 14.6914 21 13.569V4.93945C21 4.6807 20.8189 4.45258 20.5543 4.37824Z" fill="black" />
+                        <rect x="9" y="13.0283" width="7.3536" height="1.2256" rx="0.6128" transform="rotate(-45 9 13.0283)" fill="black" />
+                        <rect x="9.86664" y="7.93359" width="7.3536" height="1.2256" rx="0.6128" transform="rotate(45 9.86664 7.93359)" fill="black" />
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->
+                <span class="d-flex flex-column align-items-start ms-2">
+                    <span class="fs-5 fw-bolder">Tüm Projeler</span>
+                </span>
+            </a>
+            <a asp-action="Index" asp-route-status="active" class="btn btn-sm btn-flex btn-light-primary px-6">
+                <!--begin::Svg Icon | path: assets/media/icons/duotune/general/gen048.svg-->
+                <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path opacity="0.3" d="M20.5543 4.37824L12.1798 2.02473C12.0626 1.99176 11.9376 1.99176 11.8203 2.02473L3.44572 4.37824C3.18118 4.45258 3 4.6807 3 4.93945V13.569C3 14.6914 3.48509 15.8404 4.4417 16.984C5.17231 17.8575 6.18314 18.7345 7.446 19.5909C9.56752 21.0295 11.6566 21.912 11.7445 21.9488C11.8258 21.9829 11.9129 22 12.0001 22C12.0872 22 12.1744 21.983 12.2557 21.9488C12.3435 21.912 14.4326 21.0295 16.5541 19.5909C17.8169 18.7345 18.8277 17.8575 19.5584 16.984C20.515 15.8404 21 14.6914 21 13.569V4.93945C21 4.6807 20.8189 4.45258 20.5543 4.37824Z" fill="black" />
+                        <path d="M10.5606 11.3042L9.57283 10.3018C9.28174 10.0065 8.80522 10.0065 8.51412 10.3018C8.22897 10.5912 8.22897 11.0559 8.51412 11.3452L10.4182 13.2773C10.8099 13.6747 11.451 13.6747 11.8427 13.2773L15.4859 9.58051C15.771 9.29117 15.771 8.82648 15.4859 8.53714C15.1948 8.24176 14.7183 8.24176 14.4272 8.53714L11.7002 11.3042C11.3869 11.6221 10.874 11.6221 10.5606 11.3042Z" fill="black" />
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->
+                <span class="d-flex flex-column align-items-start ms-2">
+                    <span class="fs-5 fw-bolder">Açık Projeler</span>
+                </span>
+            </a>
+            <a asp-action="Index" asp-route-status="finished" class="btn btn-sm btn-flex btn-light-primary px-6">
+                <!--begin::Svg Icon | path: assets/media/icons/duotune/general/gen051.svg-->
+                <span class="svg-icon svg-icon-muted svg-icon-2hx">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path opacity="0.3" d="M20.5543 4.37824L12.1798 2.02473C12.0626 1.99176 11.9376 1.99176 11.8203 2.02473L3.44572 4.37824C3.18118 4.45258 3 4.6807 3 4.93945V13.569C3 14.6914 3.48509 15.8404 4.4417 16.984C5.17231 17.8575 6.18314 18.7345 7.446 19.5909C9.56752 21.0295 11.6566 21.912 11.7445 21.9488C11.8258 21.9829 11.9129 22 12.0001 22C12.0872 22 12.1744 21.983 12.2557 21.9488C12.3435 21.912 14.4326 21.0295 16.5541 19.5909C17.8169 18.7345 18.8277 17.8575 19.5584 16.984C20.515 15.8404 21 14.6914 21 13.569V4.93945C21 4.6807 20.8189 4.45258 20.5543 4.37824Z" fill="black" />
+                        <path d="M14.854 11.321C14.7568 11.2282 14.6388 11.1818 14.4998 11.1818H14.3333V10.2272C14.3333 9.61741 14.1041 9.09378 13.6458 8.65628C13.1875 8.21876 12.639 8 12 8C11.361 8 10.8124 8.21876 10.3541 8.65626C9.89574 9.09378 9.66663 9.61739 9.66663 10.2272V11.1818H9.49999C9.36115 11.1818 9.24306 11.2282 9.14583 11.321C9.0486 11.4138 9 11.5265 9 11.6591V14.5227C9 14.6553 9.04862 14.768 9.14583 14.8609C9.24306 14.9536 9.36115 15 9.49999 15H14.5C14.6389 15 14.7569 14.9536 14.8542 14.8609C14.9513 14.768 15 14.6553 15 14.5227V11.6591C15.0001 11.5265 14.9513 11.4138 14.854 11.321ZM13.3333 11.1818H10.6666V10.2272C10.6666 9.87594 10.7969 9.57597 11.0573 9.32743C11.3177 9.07886 11.6319 8.9546 12 8.9546C12.3681 8.9546 12.6823 9.07884 12.9427 9.32743C13.2031 9.57595 13.3333 9.87594 13.3333 10.2272V11.1818Z" fill="black" />
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->
+                <span class="d-flex flex-column align-items-start ms-2">
+                    <span class="fs-5 fw-bolder">Kapalı Projeler</span>
+                </span>
+            </a>
+        </span>
+    </div>
+    <div class="card-body pt-0">
+        <form class="form" method="post" id="kt_upsert_projects_form">
+            <div class="row">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @if (Model.Project.Id > 0)
+                {
+                    <input type="hidden" asp-for="Project.Id" />
+                    <input type="hidden" asp-for="Project.TenantId" />
+                    <input type="hidden" asp-for="Project.CreatedBy" />
+                    <input type="hidden" asp-for="Project.CreatedDate" />
+                    <input type="hidden" asp-for="Project.Status" />
+                    <input type="hidden" asp-for="Project.IsLocked" />
+                }
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="row mb-5">
+                        <div class="d-flex flex-column mb-5 fv-row">
+                            <label class="fs-5 fw-bold mb-2">Proje Adı</label>
+                            <input type="text" asp-for="Project.ProjectName" class="form-control form-control-solid" placeholder="Proje adı giriniz." />
+                            <span asp-validation-for="Project.ProjectName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-5 fv-row">
+                            <div class="d-flex">
+                                <label class="fs-5 fw-bold mb-2 mt-4">İşveren Firma </label>
+                                <div class="d-flex flex-grow-1 justify-content-end">
+                                    <a href="#" class="btn btn-link align-items-end" data-bs-toggle="modal" data-bs-target="#kt_modal_add_currentaccounts">Yeni Firma Tanımla</a>
+                                </div>
+                            </div>
+                            <select asp-for="Project.CurrentAccountId" asp-items="Model.CurrentAccountList" class="form-select form-select-solid" data-control="select2">
+                                <option value="">--- Firma Seçiniz ---</option>
+                            </select>
+                        </div>
+                        <div class="d-flex flex-column mb-5 fv-row">
+                            <label class="fs-5 fw-bold mb-2">Yetkili Adı</label>
+                            <input type="text" id="EmployerFullName" class="form-control form-control-solid" readonly placeholder="Yetkili adı giriniz." value="@(Model.Project.Id > 0 ? Model.Project.CurrentAccount?.AuthorizedPerson : "")" />
+                        </div>
+                        <div class="d-flex flex-column mb-5 fv-row">
+                            <label class="fs-5 fw-bold mb-2">İletişim No</label>
+                            <input type="text" id="EmployerPhone" class="form-control form-control-solid" readonly placeholder="Telefon no giriniz." value="@(Model.Project.Id > 0 ? Model.Project.CurrentAccount?.Phone1 : "")" />
+                        </div>
+                        <div class="d-flex flex-column mb-5 fv-row">
+                            <label class="fs-5 fw-bold mb-2">Eposta</label>
+                            <input type="text" id="EmployerEmail" class="form-control form-control-solid" readonly placeholder="Eposta giriniz." value="@(Model.Project.Id > 0 ? Model.Project.CurrentAccount?.Email : "")" />
+                        </div>
+                        <div class="pt-10 pb-lg-5">
+                            <h2 class="fw-bolder text-dark underline underline-gray">Arazi Bilgileri</h2>
+                        </div>
+                        <!--begin::Pafta,Ada,Parsel-->
+                        <div class="row mb-5">
+                            <div class="col-md-4 fv-row fv-plugins-icon-container">
+                                <label class="fs-5 fw-bold mb-2">Pafta</label>
+                                <input type="text" asp-for="Project.Pafta" class="form-control form-control-solid" placeholder="Pafta no." />
+                                <span asp-validation-for="Project.Pafta" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 fv-row fv-plugins-icon-container">
+                                <label class="fs-5 fw-bold mb-2">Ada</label>
+                                <input type="text" asp-for="Project.Ada" class="form-control form-control-solid" placeholder="Pafta no." />
+                                <span asp-validation-for="Project.Ada" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 fv-row fv-plugins-icon-container">
+                                <label class="fs-5 fw-bold mb-2">Parsel</label>
+                                <input type="text" asp-for="Project.Parsel" class="form-control form-control-solid" placeholder="Pafta no." />
+                                <span asp-validation-for="Project.Parsel" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <!--end::Pafta,Ada,Parsel-->
+                        <!--begin::CountryId, CityId,TownId-->
+                        <div class="row mb-5">
+                            <div class="col-md-4 fv-row fv-plugins-icon-container">
+                                <label class="fs-5 fw-bold mb-2">Ülke</label>
+                                <select asp-for="Project.CountryId" asp-items="Model.CountryList" class="form-select form-select-solid" data-control="select2">
+                                    <option value="">--- Ülke seçiniz ---</option>
+                                </select>
+                                <span asp-validation-for="Project.CityId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 fv-row fv-plugins-icon-container">
+                                <label class="fs-5 fw-bold mb-2">İl</label>
+                                <select asp-for="Project.CityId" asp-items="Model.CityList" class="form-select form-select-solid" data-control="select2">
+                                    <option value="">--- İl seçiniz ---</option>
+                                </select>
+                                <span asp-validation-for="Project.CityId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 fv-row fv-plugins-icon-container">
+                                <label class="fs-5 fw-bold mb-2">İlçe</label>
+                                <select asp-for="Project.TownId" asp-items="Model.TownList" class="form-select form-select-solid" data-control="select2">
+                                    <option value="">--- İlçe seçiniz ---</option>
+                                </select>
+                                <span asp-validation-for="Project.TownId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <!--end::CountryId, CityId,TownId-->
+
+                        <div class="pt-10 pb-lg-5">
+                            <!--begin::Title-->
+                            <h2 class="text-dark fw-bolder underline underline-gray">Proje Kapsamı</h2>
+                            <!--end::Title-->
+                        </div>
+                        <!--begin::BlockCount,TotalApartmentCount,TotalCommercialCount-->
+                        <div class="row mb-5">
+                            <div class="col-md-4 fv-row fv-plugins-icon-container">
+                                <label class="fs-5 fw-bold mb-2">Blok Sayısı</label>
+                                <input type="text" asp-for="Project.BlockCount" class="form-control form-control-solid" placeholder="" />
+                                <span asp-validation-for="Project.BlockCount" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 fv-row fv-plugins-icon-container">
+                                <label class="fs-5 fw-bold mb-2">
+                                    Konut Sayısı
+                                    <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="" data-bs-original-title="Toplam Bağımsız Bölüm, Konut" aria-label="Toplam Bağımsız Bölüm, Konut"></i>
+                                </label>
+                                <input type="text" asp-for="Project.TotalApartmentCount" class="form-control form-control-solid" placeholder="" />
+                                <span asp-validation-for="Project.TotalApartmentCount" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 fv-row fv-plugins-icon-container">
+                                <label class="fs-5 fw-bold mb-2">Ticari</label>
+                                <input type="text" asp-for="Project.TotalCommercialCount" class="form-control form-control-solid" placeholder="" />
+                                <span asp-validation-for="Project.TotalCommercialCount" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <!--end::BlockCount,TotalApartmentCount,TotalCommercialCount-->
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="pt-10 pb-lg-5">
+                        <!--begin::Title-->
+                        <h2 class="text-dark fw-bolder underline underline-gray">Alt Proje Bilgileri</h2>
+                        <!--end::Title-->
+                    </div>
+                    <!--begin::ArchitecturalWorks,StaticWorks,MechanicalWorks,ElectricalWorks,LandScapeWorks-->
+                    <div class="row mb-5">
+                        <div class="d-flex flex-column mb-5 fv-row">
+                            <label class="fs-5 fw-bold mb-2">Mimari</label>
+                            <input type="text" asp-for="Project.ArchitecturalWorks" class="form-control form-control-solid" placeholder="Mimarlık firma adı giriniz." />
+                            <span asp-validation-for="Project.ArchitecturalWorks" class="text-danger"></span>
+                        </div>
+                        <div class="d-flex flex-column mb-5 fv-row">
+                            <label class="fs-5 fw-bold mb-2">Statik</label>
+                            <input type="text" asp-for="Project.StaticWorks" class="form-control form-control-solid" placeholder="Statik firma adı giriniz." />
+                            <span asp-validation-for="Project.StaticWorks" class="text-danger"></span>
+                        </div>
+                        <div class="d-flex flex-column mb-5 fv-row">
+                            <label class="fs-5 fw-bold mb-2">Mekanik</label>
+                            <input type="text" asp-for="Project.MechanicalWorks" class="form-control form-control-solid" placeholder="Mekanik firma adı giriniz." />
+                            <span asp-validation-for="Project.MechanicalWorks" class="text-danger"></span>
+                        </div>
+                        <div class="d-flex flex-column mb-5 fv-row">
+                            <label class="fs-5 fw-bold mb-2">Elektrik</label>
+                            <input type="text" asp-for="Project.ElectricalWorks" class="form-control form-control-solid" placeholder="Elektrik firma adı giriniz." />
+                            <span asp-validation-for="Project.ElectricalWorks" class="text-danger"></span>
+                        </div>
+                        <div class="d-flex flex-column mb-5 fv-row">
+                            <label class="fs-5 fw-bold mb-2">Peyzaj</label>
+                            <input type="text" asp-for="Project.LandScapeWorks" class="form-control form-control-solid" placeholder="Peyzaj firma adı giriniz." />
+                            <span asp-validation-for="Project.LandScapeWorks" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!--end::ArchitecturalWorks,StaticWorks,MechanicalWorks,ElectricalWorks,LandScapeWorks-->
+                    <div class="pt-10 pb-lg-5">
+                        <!--begin::Title-->
+                        <h2 class="text-dark fw-bolder underline underline-gray">Proje Detay Bilgileri</h2>
+                        <!--end::Title-->
+                    </div>
+                    <!--begin::EmploymentDate,CommitmentDate,LicenseDate,LicenseNumber-->
+                    <div class="row mb-5">
+                        <div class="col-md-6 fv-row fv-plugins-icon-container">
+                            <label class="fs-5 fw-bold mb-2">İş Alım Tarihi</label>
+                            <input asp-for="Project.EmploymentDate" class="form-control form-control-solid ps-12 flatpickr-input active" placeholder="İş alım tarihi">
+                            <span asp-validation-for="Project.EmploymentDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 fv-row fv-plugins-icon-container">
+                            <label class="fs-5 fw-bold mb-2">Taahhüt Tarihi</label>
+                            <input asp-for="Project.CommitmentDate" class="form-control form-control-solid ps-12 flatpickr-input active" placeholder="Taahhüt tarihi">
+                            <span asp-validation-for="Project.CommitmentDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!--end::EmploymentDate,CommitmentDate-->
+                    <!--begin::LicenseDate,LicenseNumber-->
+                    <div class="row mb-5">
+                        <div class="col-md-6 fv-row fv-plugins-icon-container">
+                            <label class="fs-5 fw-bold mb-2">Ruhsat Tarihi</label>
+                            <input asp-for="Project.LicenseDate" class="form-control form-control-solid ps-12 flatpickr-input active" placeholder="Ruhsat tarihi">
+                            <span asp-validation-for="Project.LicenseDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 fv-row fv-plugins-icon-container">
+                            <label class="fs-5 fw-bold mb-2">Ruhsat No</label>
+                            <input type="text" asp-for="Project.LicenseNumber" class="form-control form-control-solid" placeholder="Ruhsat no girin">
+                            <span asp-validation-for="Project.LicenseNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!--end::LicenseDate,LicenseNumber-->
+                    <!--begin::BuildingInspection-->
+                    <div class="row mb-5">
+                        <div class="col-md-12 fv-row fv-plugins-icon-container">
+                            <label class="fs-5 fw-bold mb-2">Yapı Denetim</label>
+                            <input type="text" asp-for="Project.BuildingInspection" class="form-control form-control-solid" placeholder="Yapı denetim firmasını girin">
+                            <span asp-validation-for="Project.BuildingInspection" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!--end::BuildingInspection-->
+                </div>
+            </div>
+            <div class="pt-10 pb-lg-5">
+                <!--begin::Title-->
+                <h2 class="text-dark fw-bolder underline underline-gray">Proje Mali Bilgileri</h2>
+                <!--end::Title-->
+            </div>
+            @if(Model.Project.Id == 0) { 
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="fs-5 fw-bold mb-2">Taahhüt Tutarı</label>
+                    <input asp-for="Project.CommitmentAmount" type="text" class="form-control form-control-solid" />
+                    <span asp-validation-for="Project.CommitmentAmount" class="text-danger"></span>
+                </div>
+                <div class="col-md-2">
+                    <label class="fs-5 fw-bold mb-2">Peşinat Oranı</label>
+                    <input asp-for="Project.DownPaymentRate" type="text" class="form-control form-control-solid" />
+                    <span asp-validation-for="Project.DownPaymentRate" class="text-danger"></span>
+                </div>
+                <div class="col-md-2">
+                    <label class="fs-5 fw-bold mb-2">Taksit Sayısı</label>
+                    <input asp-for="Project.InstallmentCount" type="text" class="form-control form-control-solid" />
+                    <span asp-validation-for="Project.InstallmentCount" class="text-danger"></span>
+                </div>
+            </div>}
+            <div class="row">
+                <div class="col-12">
+                    <div class="flex-center pt-10">
+                        <!--begin::Button-->
+                        <button type="submit" id="kt_upsert_projects_submit" class="btn btn-primary">
+                            <i class="far fa-save"></i>
+                            <span class="indicator-label">Kaydet</span>
+                            <span class="indicator-progress">
+                                Lütfen bekleyin...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span>
+                        </button>
+                        <!--end::Button-->
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!--begin::Modal - CurrentAccount - Add-->
+<div class="modal fade" id="kt_modal_add_currentaccounts" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered mw-850px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Form-->
+            <form class="form" action="#" method="post" id="kt_modal_add_currentaccounts_form" data-kt-redirect="/Subcontractor">
+                <!--begin::Modal header-->
+                <div class="modal-header" id="kt_modal_add_currentaccounts_header">
+                    <!--begin::Modal title-->
+                    <h2 class="fw-bolder">Yeni Cari Hesap Ekleme</h2>
+                    <!--end::Modal title-->
+                    <!--begin::Close-->
+                    <div id="kt_modal_add_currentaccounts_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                        <!--begin::Svg Icon | path: icons/duotone/Navigation/Close.svg-->
+                        <span class="svg-icon svg-icon-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                <g transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) translate(4.000000, 4.000000)" fill="#000000">
+                                    <rect fill="#000000" x="0" y="7" width="16" height="2" rx="1" />
+                                    <rect fill="#000000" opacity="0.5" transform="translate(8.000000, 8.000000) rotate(-270.000000) translate(-8.000000, -8.000000)" x="0" y="7" width="16" height="2" rx="1" />
+                                </g>
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </div>
+                    <!--end::Close-->
+                </div>
+                <!--end::Modal header-->
+                <!--begin::Modal body-->
+                <div class="modal-body py-10 px-lg-17">
+                    <!--begin::Scroll-->
+                    <div class="scroll-y me-n7 pe-7" id="kt_modal_add_currentaccounts_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_currentaccounts_header" data-kt-scroll-wrappers="#kt_modal_add_currentaccounts_scroll" data-kt-scroll-offset="300px">
+                        <!--begin::Input group CompanyName & AuthorizedPerson-->
+                        <div class="row mb-7">
+                            <!--begin::Input group CompanyName-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Cari Hesap Firma Adı</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" name="CompanyName" class="form-control form-control-solid" placeholder="Cari Hesap firma adı giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group CompanyName-->
+                            <!--begin::Input group AuthorizedPerson-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Yetkili Kişi</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" name="AuthorizedPerson" class="form-control form-control-solid" placeholder="Yetkili kişiyi giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group AuthorizedPerson-->
+                        </div>
+                        <!--end::Input group CompanyName & AuthorizedPerson-->
+                        <!--begin::Input group Address-->
+                        <div class="row g-9 mb-7">
+                            <div class="col-md-12 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Adres</label>
+                                <!--end::Label-->
+                                <!--begin::Input Address-->
+                                <textarea name="Address" class="form-control form-control-solid" placeholder="Adres giriniz"></textarea>
+                                <!--end::Input Address-->
+                            </div>
+                        </div>
+                        <!--end::Input group Address-->
+                        <!--begin::Input group City & Country & TownId-->
+                        <div class="row g-9 mb-7">
+                            <!--begin::Col Country-->
+                            <div class="col-md-4 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Ülke</label>
+                                <!--end::Label-->
+                                <!--begin::Input country-->
+                                <select name="CountryId" asp-items="Model.CountryList" class="form-select form-select-solid fw-bolder" aria-label="Ülke Seç." data-control="select2" data-dropdown-parent="#kt_modal_add_currentaccounts" data-placeholder="- Lütfen bir ülke seçiniz">
+                                    <option value="">Ülke seç...</option>
+                                </select>
+                                <!--end::Input country-->
+                            </div>
+                            <!--end::Col Country-->
+                            <!--begin::Col City-->
+                            <div class="col-md-4 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Şehir</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <select name="CityId" asp-items="Model.CityList" class="form-select form-select-solid fw-bolder" aria-label="Şehir Seç." data-control="select2" data-dropdown-parent="#kt_modal_add_currentaccounts" data-placeholder="- Lütfen bir şehir seçiniz">
+                                    <option value="">Şehir seç...</option>
+                                </select>
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col City-->
+                            <!--begin::Col TownId-->
+                            <div class="col-md-4 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">İlçe</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <select name="TownId" asp-items="Model.TownList" class="form-select form-select-solid fw-bolder" aria-label="İlçe Seç." data-control="select2" data-dropdown-parent="#kt_modal_add_currentaccounts" data-placeholder="- Lütfen bir ilçe seçiniz">
+                                    <option value="">İlçe seç...</option>
+                                </select>
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col TownId-->
+                        </div>
+                        <!--end::Input group CityId & CountryId & TownId-->
+                        <!--begin::Input group Phone1 & Phone2 & Email-->
+                        <div class="row g-9 mb-7">
+                            <!--begin::Input group Phone1-->
+                            <div class="col-md-4 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Telefon-1</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" name="Phone1" class="form-control form-control-solid" placeholder="Telefon no giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group Phone1-->
+                            <!--begin::Input group Phone2-->
+                            <div class="col-md-4 fv-row">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">Telefon-2</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" name="Phone2" class="form-control form-control-solid" placeholder="Telefon no giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group Phone2-->
+                            <!--begin::Input group Email-->
+                            <div class="col-md-4 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Eposta</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" name="Email" class="form-control form-control-solid" placeholder="Eposta giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group Email-->
+                        </div>
+                        <!--end::Input group Phone1 & Phone2 & Email-->
+                        <!--begin::Input group TaxId & TaxOffice-->
+                        <div class="row g-9 mb-7">
+                            <!--begin::Col TaxId-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Vergi No</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" name="TaxId" class="form-control form-control-solid" minlength="10" maxlength="11" placeholder="Vergi no giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col TaxId-->
+                            <!--begin::Col TaxOffice-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Vergi Dairesi</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" name="TaxOffice" class="form-control form-control-solid" placeholder="Vergi dairesi giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col TaxOffice-->
+                        </div>
+                        <!--end::Input group TaxId & TaxOffice-->
+                        <!--begin::Input group BankName & IBAN-->
+                        <div class="row mb-7">
+                            <!--begin::Input group BankName-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">Banka</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" name="BankName" class="form-control form-control-solid" placeholder="Banka adı girin" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group BankName-->
+                            <!--begin::Input group IBAN-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">IBAN</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" name="IBAN" class="form-control form-control-solid" placeholder="IBAN giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group IBAN-->
+                        </div>
+                        <!--end::Input group BankName & IBAN-->
+                    </div>
+                    <!--end::Scroll-->
+                </div>
+                <!--end::Modal body-->
+                <!--begin::Modal footer-->
+                <div class="modal-footer flex-center">
+                    <!--begin::Button-->
+                    <button type="reset" id="kt_modal_add_currentaccounts_cancel" class="btn btn-white me-3">Vazgeç</button>
+                    <!--end::Button-->
+                    <!--begin::Button-->
+                    <button type="submit" id="kt_modal_add_currentaccounts_submit" class="btn btn-primary">
+                        <span class="indicator-label">Kaydet</span>
+                        <span class="indicator-progress">
+                            Lütfen bekleyin...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
+                    <!--end::Button-->
+                </div>
+                <!--end::Modal footer-->
+            </form>
+            <!--end::Form-->
+        </div>
+    </div>
+</div>
+<!--end::Modal - CurrentAccount - Add-->
+
+@section PageScripts {
+    <!--begin::Page Products Javascript(used by this page)-->
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Page Products Javascript-->
+    <!--begin::Page Custom Javascript(used by this page)-->
+    <script src="/assets/js/custom/apps/project/upsert.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}
+
+@section Scripts{
+    <script src="~/assets/js/custom/modals/create-project.bundle.js"></script>
+    <script>
+        $("#Project_EmploymentDate").flatpickr({
+            onReady: function () {
+                this.jumpToDate(moment().format("DD-MM-YYYY"))
+            },
+            locale: Turkish,
+            dateFormat: "d-m-Y",
+            defaultDate: moment().format("DD-MM-YYYY")
+        });
+        $("#Project_CommitmentDate").flatpickr({
+            onReady: function () {
+                this.jumpToDate(moment().format("DD-MM-YYYY"))
+            },
+            locale: Turkish,
+            dateFormat: "d-m-Y",
+            defaultDate: moment().format("DD-MM-YYYY")
+        });
+        $("#Project_LicenseDate").flatpickr({
+            onReady: function () {
+                this.jumpToDate(moment().format("DD-MM-YYYY"))
+            },
+            locale: Turkish,
+            dateFormat: "d-m-Y",
+            defaultDate: moment().format("DD-MM-YYYY")
+        });
+        $("#Project_DownPaymentDate").flatpickr({
+            onReady: function () {
+                this.jumpToDate(moment().format("DD-MM-YYYY"))
+            },
+            locale: Turkish,
+            dateFormat: "d-m-Y",
+            defaultDate: moment().format("DD-MM-YYYY")
+        });
+    </script>
+}

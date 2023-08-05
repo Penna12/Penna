@@ -1,0 +1,166 @@
+﻿@model ConcreteCastingDto
+@{
+    ViewData["Title"] = Toolbar.Title;
+}
+
+@section Styles {
+<style>
+    input:invalid {
+        border: red solid 3px;
+    }
+</style>
+}
+
+<div class="card">
+    <div class="card-header border-0 pt-10">
+        <!--begin::Modal title-->
+        <h2 class="fw-bolder">Beton Döküm İşlemi</h2>
+        <!--end::Modal title-->
+    </div>
+    <div class="card-body pt-0">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-7">
+                    @*<label class="required fs-6 fw-bold mb-2">Dökülen Yer</label>
+                    <input type="text" asp-for="ConcreteRequest.Block.Name" class="form-control form-control-solid" readonly="readonly" />*@
+                    <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed py-3 px-6">
+						<div class="d-flex flex-stack flex-grow-1 flex-wrap flex-md-nowrap">
+							<div class="mb-3 mb-md-0 fw-bold">
+								<h4 class="text-gray-800 fw-bolder">Dökülen Yer</h4>
+								<div class="fs-6 text-gray-600 pe-7">@Model.ConcreteRequest.Block.Name</div>
+							</div>
+						</div>
+					</div>
+                </div>
+                <div class="mb-7">
+                    @*<label class="required fs-6 fw-bold mb-2">Beton Santrali</label>
+                    <input type="text" asp-for="ConcreteRequest.Product.Brand" class="form-control form-control-solid" readonly="readonly" />*@
+                    <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed py-3 px-6">
+						<div class="d-flex flex-stack flex-grow-1 flex-wrap flex-md-nowrap">
+							<div class="mb-3 mb-md-0 fw-bold">
+								<h4 class="text-gray-800 fw-bolder">Beton Santrali</h4>
+								<div class="fs-6 text-gray-600 pe-7">@Model.ConcreteRequest.Product.Brand</div>
+							</div>
+						</div>
+					</div>
+                </div>
+                <div class="mb-7">
+                    @*<label class="required fs-6 fw-bold mb-2">Beton Türü</label>
+                    <input type="text" asp-for="ConcreteRequest.Product.Name" class="form-control form-control-solid" readonly="readonly" />*@
+                    <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed py-3 px-6">
+						<div class="d-flex flex-stack flex-grow-1 flex-wrap flex-md-nowrap">
+							<div class="mb-3 mb-md-0 fw-bold">
+								<h4 class="text-gray-800 fw-bolder">Beton Türü</h4>
+								<div class="fs-6 text-gray-600 pe-7">@Model.ConcreteRequest.Product.Name</div>
+							</div>
+						</div>
+					</div>
+                </div>
+                <div class="mb-7">
+                    @*<label class="required fs-6 fw-bold mb-2">Miktar</label>
+                    <input type="text" asp-for="ConcreteRequest.Quantity" class="form-control form-control-solid" readonly="readonly" />*@
+                    <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed py-3 px-6">
+						<div class="d-flex flex-stack flex-grow-1 flex-wrap flex-md-nowrap">
+							<div class="mb-3 mb-md-0 fw-bold">
+								<h4 class="text-gray-800 fw-bolder">Miktar</h4>
+								<div class="fs-6 text-gray-600 pe-7">@Model.ConcreteRequest.Quantity @Model.ConcreteRequest.Product?.Unit?.Name</div>
+							</div>
+						</div>
+					</div>
+                </div>
+            </div>
+            <div class="col-md-6 rounded border-primary border border-dashed p-6">
+                <!--begin::Form-->
+                <form class="form" asp-action="SaveConcreteCasting" method="post" id="add_concrete_casting_form" data-kt-redirect="/Concrete/TransactionTracking">
+                    <input type="hidden" id="requestedQuantity" value="@Model.ConcreteRequest.Quantity" />
+                    <input type="hidden" asp-for="ConcreteRequest.Id" />
+                    <input type="hidden" asp-for="ConcreteCasting.ConcreteRequestId" value="@Model.ConcreteRequest.Id" />
+                    <!--begin::Input group CastingDate-->
+                    <div class="fv-row mb-7">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Tarih</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="ConcreteCasting.CastingDate" class="form-control form-control-solid" />
+                        <!--end::Input-->
+                        <span asp-validation-for="ConcreteCasting.CastingDate" class="text-danger"></span>
+                    </div>
+                    <!--end::Input group CastingDate-->
+                    <!--begin::Input group CarPlate-->
+                    <div class="fv-row mb-7">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Araç Plaka</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="ConcreteCasting.CarPlate" class="form-control form-control-solid" placeholder="araç plakası" />
+                        <!--end::Input-->
+                        <span asp-validation-for="ConcreteCasting.CarPlate" class="text-danger"></span>
+                    </div>
+                    <!--end::Input group CarPlate-->
+                    <!--begin::Input group WaybilNumber-->
+                    <div class="fv-row mb-7">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">İrsaliye No</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="ConcreteCasting.WaybilNumber" class="form-control form-control-solid" placeholder="irsaliye numarası" />
+                        <!--end::Input-->
+                        <span asp-validation-for="ConcreteCasting.WaybilNumber" class="text-danger"></span>
+                    </div>
+                    <!--end::Input group WaybilNumber-->
+                    <!--begin::Input group Quantity-->
+                    <div class="fv-row mb-7">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Miktarı (m3)</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="ConcreteCasting.Quantity" max="@Model.ConcreteRequest.Quantity" class="form-control form-control-solid" placeholder="Miktar giriniz" required title="Alım miktarı, @Model.ConcreteRequest.Quantity @Model.ConcreteRequest.Product.Unit.Name 'den fazla olamaz." />
+                        <!--end::Input-->
+                        <span asp-validation-for="ConcreteCasting.Quantity" class="text-danger"></span>
+                    </div>
+                    <!--end::Input group Quantity-->
+                    <!--begin::Input group TotalCasting-->
+                    <div class="fv-row mb-7">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Kalan Miktar</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="TotalCasting" class="form-control form-control-solid" readonly="readonly" />
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group TotalCasting-->
+                    <!--begin::Button Group-->
+                    <div class="flex-center">
+                        <!--begin::Button-->
+                        <button type="submit" id="add_concrete_casting_submit" class="btn btn-primary">
+                            <span class="indicator-label">Kaydet</span>
+                            <span class="indicator-progress">
+                                Lütfen bekleyin...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span>
+                        </button>
+                        <!--end::Button-->
+                    </div>
+                    <!--end::Button Group-->
+                </form>
+                <!--end::Form-->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section PageScripts {
+<script src="~/assets/js/custom/apps/concrete/concrete-casting.js"></script>
+<partial name="_ValidationScriptsPartial" />
+<script>
+    $("#ConcreteCasting_CastingDate").flatpickr({
+        onReady: function () {
+            this.jumpToDate(moment().format("DD-MM-YYYY"))
+        },
+        locale: Turkish,
+        dateFormat: "d-m-Y",
+        defaultDate: moment().format("DD-MM-YYYY")
+    });
+</script>
+}

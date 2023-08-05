@@ -1,0 +1,201 @@
+﻿@model PurchaseDto
+@{
+    ViewData["Title"] = Toolbar.Title;
+}
+
+@section Styles {
+    <!--begin::Page Vendor Stylesheets(used by this page)-->
+    <link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Page Vendor Stylesheets-->
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+
+<div class="card">
+    <div class="card-header border-0 pt-10">
+        <!--begin::title-->
+        <h2 class="fw-bolder">İhale Usulü Satın Alma Yap</h2>
+        <!--end::title-->
+    </div>
+    <div class="card-body pt-0">
+        <!--begin::Form-->
+        <form class="form" action="#" method="post" id="add_tender_purchase_form" data-kt-redirect="/Purchase">
+            <input type="hidden" asp-for="Purchase.PurchaseRequestId" />
+            <input type="hidden" asp-for="Purchase.PurchaseType" />
+            <!-- Talep yapılan miktarın alınmış kısmı varsa veya yoksa da kalan alınacak miktar,
+                "PurchaseRequest" tablosunbdaki "RemainingQuantity" alanındaki tutar buraya yazılan  -->
+            <input type="hidden" id="RemainingQuantity" value="@Model.PurchaseRequest.RemainingQuantity" />
+            <div class="row">
+                <div class="col-md-6">
+                    <!--begin::Input group PurchaseDate-->
+                    <div class="fv-row mb-7">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Tarih</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="Purchase.PurchaseDate" class="form-control form-control-solid" />
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group PurchaseDate-->
+                    <!--begin::Input group ProductId-->
+                    <div class="fv-row mb-7">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Alınacak Malzeme</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <select asp-for="Purchase.ProductId" asp-items="Model.ProductList" class="form-select form-select-solid">
+                            <option value="">---Malzeme Seç---</option>
+                        </select>
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group ProductId-->
+                    <!--begin::Input group Quantity-->
+                    <div class="fv-row mb-7">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Miktarı</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="Purchase.Quantity" class="form-control form-control-solid" placeholder="Miktar giriniz" />
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group Quantity-->
+                    <!--begin::Input group RequestedDeliveryDate-->
+                    <div class="fv-row mb-7">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Talep Edilen Teslim Tarihi</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="Purchase.RequestedDeliveryDate" class="form-control form-control-solid" />
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group RequestedDeliveryDate-->
+                    <!--begin::Input group BlockId-->
+                    <div class="fv-row mb-7">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Talep Edilen Birim</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <select asp-for="Purchase.RequestedBlockId" asp-items="Model.BlockList" class="form-select form-select-solid">
+                            <option value="">---Birim Seç---</option>
+                        </select>
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group BlockId-->
+                    <!--begin::Input group RequestedPlace-->
+                    <div class="fv-row mb-7">
+                        <!--begin::Label-->
+                        <label class="fs-6 fw-bold mb-2">Talep Edilen Yer</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="Purchase.RequestedPlace" class="form-control form-control-solid" placeholder="Talep edilen yer giriniz" readonly="readonly" />
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group RequestedPlace-->
+                    <!--begin::Input group Description-->
+                    <div class="fv-row mb-7">
+                        <!--begin::Label-->
+                        <label class="fs-6 fw-bold mb-2">Açıklama</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <textarea asp-for="Purchase.Description" class="form-control form-control-solid" rows="2" placeholder="Açıklama giriniz"></textarea>
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group Description-->
+                </div>
+                <div class="col-md-6">
+                    <!--begin::Input group Tedarikçi Grubu-->
+                    <div class="fv-row mb-7">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Tedarikçi Grubu</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <select id="BusinessGroupId" name="BusinessGroupId" asp-items="@Html.GetEnumSelectList<BusinessGroupEnum>()" class="form-select form-select-solid">
+                            <option value="">--- İş Grubu Seç ---</option>
+                        </select>
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group Tedarikçi Grubu-->
+                    <!--begin::Input group SupplierCurrentAccountId multiple-->
+                    <div class="fv-row mb-7">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Tedarikçiler</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <select name="supplierList" asp-for="Purchase.SupplierCurrentAccountId" asp-items="Model.SupplierList" class="form-select form-select-solid" data-control="select2" data-allow-clear="true" multiple="multiple">
+                            <option value="">---Tedarikçi Seç---</option>
+                        </select>
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group SupplierCurrentAccountId multiple-->
+                    <!--begin::Input group FinalBidDateTime-->
+                    <div class="fv-row mb-7">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2"><span id="tender_tender_span">Teklif</span> Bitiş Tarih ve Saati</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="Purchase.FinalBidDateTime" class="form-control form-control-solid" />
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group FinalBidDateTime-->
+                </div>
+            </div>
+
+            <div class="flex-center">
+                <!--begin::Button-->
+                <a asp-action="Index" asp-controller="Purchase" class="btn btn-light btn-active-primary me-3">Satın Alma Talepleri'ne Geri Dön</a>
+                <!--end::Button-->
+                <!--begin::Button-->
+                <button type="submit" id="add_tender_purchase_submit" class="btn btn-primary">
+                    <span class="indicator-label">Kaydet</span>
+                    <span class="indicator-progress">
+                        Lütfen bekleyin...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                </button>
+                <!--end::Button-->
+            </div>
+        </form>
+        <!--end::Form-->
+    </div>
+</div>
+
+@section PageScripts {
+    <!--begin::Page Vendors Javascript(used by this page)-->
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Page Vendors Javascript-->
+    <!--begin::Page Custom Javascript(used by this page)-->
+    <script src="~/assets/js/custom/apps/purchase/add-tender-purchase.js"></script>
+    <script>
+        $("#Purchase_PurchaseDate").flatpickr({
+            onReady: function () {
+                this.jumpToDate(moment().format("DD-MM-YYYY"))
+            },
+            locale: Turkish,
+            dateFormat: "d-m-Y",
+            defaultDate: moment().format("DD-MM-YYYY")
+        });
+        $("#Purchase_RequestedDeliveryDate").flatpickr({
+            onReady: function () {
+                this.jumpToDate(moment().format("DD-MM-YYYY"))
+            },
+            locale: Turkish,
+            dateFormat: "d-m-Y",
+            defaultDate: moment().format("DD-MM-YYYY")
+        });
+        $("#Purchase_FinalBidDateTime").flatpickr({
+            onReady: function () {
+                this.jumpToDate(moment().format("DD-MM-YYYY"))
+            },
+            locale: Turkish,
+            enableTime: true,
+            dateFormat: "d-m-Y H:i",
+            minDate: "today",
+            time_24hr: true,
+            defaultDate: moment().format("DD-MM-YYYY HH:mm")
+        });
+
+    </script>
+}

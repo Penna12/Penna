@@ -1,0 +1,147 @@
+﻿@model ProjectViewDto
+
+@{
+    ViewData["Title"] = "Proje Bilançosu";
+    bool showButton = !(Model.Project.CurrentAccountDetails.Count > 0 && Model.Project.CurrentAccountDetails.Any(c => c.ProjectInstallmentNo > 0));
+}
+
+@section Styles {
+    <!--begin::Page Vendor Stylesheets(used by this page)-->
+    <link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Page Vendor Stylesheets-->
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+
+<div class="card mb-5">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2">
+                <label>Taahhüt Tutarı</label>
+                <input type="text" class="form-control form-control-solid form-control-sm" value="@Model.Project.CommitmentAmount.ToString("c")" readonly="readonly" />
+            </div>
+            <div class="col-md-2">
+                <label>Peşinat Oranı</label>
+                <input type="text" class="form-control form-control-solid form-control-sm" value="@Model.Project.DownPaymentRate" readonly="readonly" />
+            </div>
+            <div class="col-md-2">
+                <label>Taksit Sayısı</label>
+                <input type="text" class="form-control form-control-solid form-control-sm" value="@Model.Project.InstallmentCount" readonly="readonly" />
+            </div>
+            <div class="col-md-2 d-flex flex-column">
+                @if (showButton)
+                {
+                    <button type="button" id="kt_installment_calculate_button" class="btn btn-primary btn-sm mt-6">Taksit Hesapla</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body pt-0">
+        <table class="table align-middle table-row-dashed table-striped table-sm fs-6 gy-1 w-100" id="kt_project_balance_table">
+            <thead>
+                <tr class="text-start text-gray-400 fw-bolder fs-5 text-uppercase gs-0">
+                    <th class="min-w-125px">Taksit No</th>
+                    <th class="min-w-125px">Taksit Tarihi</th>
+                    <th class="min-w-125px"><span class="d-flex justify-content-end">Açıklama</span></th>
+                    <th class="min-w-125px"><span class="d-flex justify-content-end">Borç</span></th>
+                    <th class="min-w-125px ps-12">Alacak</th>
+                </tr>
+            </thead>
+            <tbody class="fw-bold text-gray-600"></tbody>
+            <tfoot>
+                <tr class="fw-bolder fs-6">
+                    <th colspan="3" class="text-danger text-nowrap align-end">Toplam:</th>
+                    <th class="text-danger fs-6"></th>
+                    <th class="text-danger fs-6"></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Taksit Hesapla-->
+<div class="modal fade" id="kt_modal_calculate_installment" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered mw-850px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Form-->
+            <form class="form" action="#" method="post" id="kt_modal_calculate_installment_form">
+                <input type="hidden" id="commitment_amount" value="@Model.Project.CommitmentAmount" />
+                <input type="hidden" id="down_payment_rate" value="@Model.Project.DownPaymentRate" />
+                <input type="hidden" id="installment_count" value="@Model.Project.InstallmentCount" />
+                <!--begin::Modal header-->
+                <div class="modal-header" id="kt_modal_calculate_installment_header">
+                    <!--begin::Modal title-->
+                    <h2 class="fw-bolder">Proje Taksitleri Hesaplama</h2>
+                    <!--end::Modal title-->
+                    <!--begin::Close-->
+                    <div id="kt_modal_calculate_installment_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                        <!--begin::Svg Icon | path: icons/duotone/Navigation/Close.svg-->
+                        <span class="svg-icon svg-icon-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                <g transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) translate(4.000000, 4.000000)" fill="#000000">
+                                    <rect fill="#000000" x="0" y="7" width="16" height="2" rx="1" />
+                                    <rect fill="#000000" opacity="0.5" transform="translate(8.000000, 8.000000) rotate(-270.000000) translate(-8.000000, -8.000000)" x="0" y="7" width="16" height="2" rx="1" />
+                                </g>
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </div>
+                    <!--end::Close-->
+                </div>
+                <!--end::Modal header-->
+                <!--begin::Modal body-->
+                <div class="modal-body py-10 px-lg-17">
+                    <!--begin::Scroll-->
+                    <div class="scroll-y me-n7 pe-7" id="kt_modal_calculate_installment_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_calculate_installment_header" data-kt-scroll-wrappers="#kt_modal_calculate_installment_scroll" data-kt-scroll-offset="300px">
+                        <table class="table align-middle table-row-dashed table-striped table-sm fs-6 gy-1 w-100" id="kt_calculate_installment_table">
+                            <thead>
+                                <tr>
+                                    <th>Taksit No</th>
+                                    <th>Taksit Tarihi</th>
+                                    <th>Açıklama</th>
+                                    <th>Tutar</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <!--end::Scroll-->
+                </div>
+                <!--end::Modal body-->
+                <!--begin::Modal footer-->
+                <div class="modal-footer flex-center">
+                    <!--begin::Button-->
+                    <button type="reset" id="kt_modal_calculate_installment_cancel" class="btn btn-white me-3">Vazgeç</button>
+                    <!--end::Button-->
+                    <!--begin::Button-->
+                    <button type="submit" id="kt_modal_calculate_installment_submit" class="btn btn-primary">
+                        <span class="indicator-label">Kaydet</span>
+                        <span class="indicator-progress">
+                            Lütfen bekleyin...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
+                    <!--end::Button-->
+                </div>
+                <!--end::Modal footer-->
+            </form>
+            <!--end::Form-->
+        </div>
+    </div>
+</div>
+
+@section PageScripts {
+    <!--begin::Page Vendors Javascript(used by this page)-->
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Page Vendors Javascript-->
+    <!--begin::Page Custom Javascript(used by this page)-->
+    <script src="~/assets/js/custom/apps/project-balance/list.js"></script>
+}

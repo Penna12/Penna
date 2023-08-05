@@ -1,0 +1,378 @@
+﻿@model BlockDto
+
+@{
+    ViewData["Title"] = "Otomatik kat irtifakı kur";
+}
+
+@section Styles {
+    <!--begin::Page Vendor Stylesheets(used by this page)-->
+    <link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Page Vendor Stylesheets-->
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-body pt-9 pb-0">
+        <div class="row mb-5">
+            <div class="col-md-3">Adı: <span class="text-gray-400 px-3">@Model.Block.Name</span></div>
+            <div class="col-md-3">Kat Sayısı : <span class="text-gray-400 px-3">@Model.Block.FloorCount</span></div>
+            <div class="col-md-3">Bodrum Kat Sayısı : <span class="text-gray-400 px-3">@Model.Block.BasementCount</span></div>
+            <div class="col-md-3">Kat Başına Bağımsız Bölüm : <span class="text-gray-400 px-3">@Model.Block.ApartmentCount</span></div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex flex-column flex-lg-row">
+    <div class="flex-lg-auto w-lg-250px me-xl-10">
+        <div class="card">
+            <!--begin::Card body-->
+            <div class="card-body p-10">
+                @if (Model.Floors.Count() > 0)
+                {
+                    <h3 class="fw-bolder mb-5 text-center">@Model.Block.Name</h3>
+                    <div id="floor-menu" class="menu menu-column">
+                        <div class="menu-item mb-2"><a asp-action="Manage" asp-controller="FloorEasement" data-kt-floor-menu="all" class="btn btn-light-primary btn-sm w-100 active">Tüm Katlar</a></div>
+                        @foreach (var floor in Model.Floors)
+                        {
+                            <div class="menu-item mb-2"><a asp-action="Manage" asp-controller="FloorEasement" asp-route-floor="@floor" data-kt-floor-menu="@floor" class="btn btn-light-primary btn-sm w-100">@floor .Kat</a></div>
+                        }
+                    </div>
+                }
+
+            </div>
+            <!--end::Card body-->
+        </div>
+    </div>
+    <div class="flex-grow-1 mb-10">
+        <div class="card">
+            <!--begin::Card header-->
+            <div class="card-header border-0 pt-6">
+                <!--begin::Card title-->
+                <div class="card-title">
+                    <!--begin::Search-->
+                    <div class="d-flex align-items-center position-relative my-1">
+                        <!--begin::Svg Icon | path: icons/duotone/General/Search.svg-->
+                        <span class="svg-icon svg-icon-1 position-absolute ms-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <rect x="0" y="0" width="24" height="24" />
+                                    <path d="M14.2928932,16.7071068 C13.9023689,16.3165825 13.9023689,15.6834175 14.2928932,15.2928932 C14.6834175,14.9023689 15.3165825,14.9023689 15.7071068,15.2928932 L19.7071068,19.2928932 C20.0976311,19.6834175 20.0976311,20.3165825 19.7071068,20.7071068 C19.3165825,21.0976311 18.6834175,21.0976311 18.2928932,20.7071068 L14.2928932,16.7071068 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
+                                    <path d="M11,16 C13.7614237,16 16,13.7614237 16,11 C16,8.23857625 13.7614237,6 11,6 C8.23857625,6 6,8.23857625 6,11 C6,13.7614237 8.23857625,16 11,16 Z M11,18 C7.13400675,18 4,14.8659932 4,11 C4,7.13400675 7.13400675,4 11,4 C14.8659932,4 18,7.13400675 18,11 C18,14.8659932 14.8659932,18 11,18 Z" fill="#000000" fill-rule="nonzero" />
+                                </g>
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                        <input type="text" data-kt-floors-table-filter="search" class="form-control form-control-solid w-250px ps-15" placeholder="Bölüm Ara" />
+                    </div>
+                    <!--end::Search-->
+                </div>
+                <!--begin::Card title-->
+                <!--begin::Card toolbar-->
+                <div class="card-toolbar">
+                    <!--begin::Toolbar-->
+                    <div class="d-flex justify-content-end" data-kt-floors-table-toolbar="base">
+                        <!--begin::Add country-->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_floors">
+                            <!--begin::Svg Icon | path: icons/duotone/Navigation/Plus.svg-->
+                            <span class="svg-icon svg-icon-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                    <rect fill="#000000" x="4" y="11" width="16" height="2" rx="1" />
+                                    <rect fill="#000000" opacity="0.5" transform="translate(12.000000, 12.000000) rotate(-270.000000) translate(-12.000000, -12.000000)" x="4" y="11" width="16" height="2" rx="1" />
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                            Yeni Bölüm
+                        </button>
+                        <!--end::Add country-->
+                    </div>
+                    <!--end::Toolbar-->
+                </div>
+                <!--end::Card toolbar-->
+            </div>
+            <!--end::Card header-->
+            <!--begin::Card body-->
+            <div class="card-body px-8 pt-0">
+                <!--begin::Table-->
+                <table id="kt_floor_table" class="table table-bordered table-striped table-light">
+                    <thead>
+                        <tr>
+                            <th>Kat No</th>
+                            <th>Bölüm</th>
+                            <th>Brüt m2</th>
+                            <th>Net m2</th>
+                            <th>Gabari m2</th>
+                            <th>Malik</th>
+                            <th>TC. Kimlik No</th>
+                            <th>GSM</th>
+                            <th>Eposta</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <!--end::Table-->
+            </div>
+            <!--end::Card body-->
+        </div>
+    </div>
+</div>
+
+<!--begin::Modal - Country - Add-->
+<div class="modal fade" id="kt_modal_add_floors" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered mw-400px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Form-->
+            <form class="form" action="#" method="post" id="kt_modal_add_floors_form" data-kt-redirect="/FloorEasement">
+                <input type="hidden" name="BlockId" value="@SD.BlockId"/>
+                <!--begin::Modal header-->
+                <div class="modal-header" id="kt_modal_add_floors_header">
+                    <!--begin::Modal title-->
+                    <h2 class="fw-bolder">Yeni Bölüm Ekleme</h2>
+                    <!--end::Modal title-->
+                    <!--begin::Close-->
+                    <div id="kt_modal_add_floors_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                        <!--begin::Svg Icon | path: icons/duotone/Navigation/Close.svg-->
+                        <span class="svg-icon svg-icon-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                <g transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) translate(4.000000, 4.000000)" fill="#000000">
+                                    <rect fill="#000000" x="0" y="7" width="16" height="2" rx="1" />
+                                    <rect fill="#000000" opacity="0.5" transform="translate(8.000000, 8.000000) rotate(-270.000000) translate(-8.000000, -8.000000)" x="0" y="7" width="16" height="2" rx="1" />
+                                </g>
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </div>
+                    <!--end::Close-->
+                </div>
+                <!--end::Modal header-->
+                <!--begin::Modal body-->
+                <div class="modal-body py-10 px-lg-17">
+                    <!--begin::Scroll-->
+                    <div class="scroll-y me-n7 pe-7" id="kt_modal_add_floors_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_floors_header" data-kt-scroll-wrappers="#kt_modal_add_floors_scroll" data-kt-scroll-offset="300px">
+                        <!--begin::Input group Floor-->
+                        <div class="row fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required col-md-8 fs-6 fw-bold mb-2">Bulunduğu Kat No</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <div class="col-md-4">
+                                <input type="number" name="Floor" class="form-control form-control-solid" />
+                            </div>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group Floor-->
+                        <!--begin::Input group SectionName-->
+                        <div class="row fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required col-md-6 fs-6 fw-bold mb-2">Bölüm Adı</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <div class="col-md-6">
+                                <input type="text" name="SectionName" class="form-control form-control-solid" />
+                            </div>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group SectionName-->
+                        <!--begin::Input group Gross-->
+                        <div class="row fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required col-md-8 fs-6 fw-bold mb-2">Brüt m2</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <div class="col-md-4">
+                                <input type="number" name="Gross" class="form-control form-control-solid" />
+                            </div>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group Gross-->
+                        <!--begin::Input group Net-->
+                        <div class="row fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required col-md-8 fs-6 fw-bold mb-2">Net m2</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <div class="col-md-4">
+                                <input type="number" name="Net" class="form-control form-control-solid" />
+                            </div>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group Net-->
+                        <!--begin::Input group Gabari-->
+                        <div class="row fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required col-md-8 fs-6 fw-bold mb-2">Gabari m2</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <div class="col-md-4">
+                                <input type="number" name="Gabari" class="form-control form-control-solid" />
+                            </div>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group Gabari-->
+                    </div>
+                    <!--end::Scroll-->
+                </div>
+                <!--end::Modal body-->
+                <!--begin::Modal footer-->
+                <div class="modal-footer flex-center">
+                    <!--begin::Button-->
+                    <button type="reset" id="kt_modal_add_floors_cancel" class="btn btn-white me-3">Vazgeç</button>
+                    <!--end::Button-->
+                    <!--begin::Button-->
+                    <button type="submit" id="kt_modal_add_floors_submit" class="btn btn-primary">
+                        <span class="indicator-label">Kaydet</span>
+                        <span class="indicator-progress">
+                            Lütfen bekleyin...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
+                    <!--end::Button-->
+                </div>
+                <!--end::Modal footer-->
+            </form>
+            <!--end::Form-->
+        </div>
+    </div>
+</div>
+<!--end::Modal - Country - Add-->
+<!--begin::Modal - Country - Edit-->
+<div class="modal fade" id="kt_modal_edit_floors" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered mw-400px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Form-->
+            <form class="form" action="#" method="post" id="kt_modal_edit_floors_form" data-kt-redirect="/FloorEasement">
+                <input type="hidden" name="Id" />
+                <input type="hidden" name="BlockId" />
+                <input type="hidden" name="CurrentAccountId" />
+                <input type="hidden" name="CreatedBy" />
+                <input type="hidden" name="CreatedDate" />
+                <!--begin::Modal header-->
+                <div class="modal-header" id="kt_modal_edt_floors_header">
+                    <!--begin::Modal title-->
+                    <h2 class="fw-bolder">Bölüm Bilgilerini Düzenle</h2>
+                    <!--end::Modal title-->
+                    <!--begin::Close-->
+                    <div id="kt_modal_edit_floors_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                        <!--begin::Svg Icon | path: icons/duotone/Navigation/Close.svg-->
+                        <span class="svg-icon svg-icon-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                <g transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) translate(4.000000, 4.000000)" fill="#000000">
+                                    <rect fill="#000000" x="0" y="7" width="16" height="2" rx="1" />
+                                    <rect fill="#000000" opacity="0.5" transform="translate(8.000000, 8.000000) rotate(-270.000000) translate(-8.000000, -8.000000)" x="0" y="7" width="16" height="2" rx="1" />
+                                </g>
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </div>
+                    <!--end::Close-->
+                </div>
+                <!--end::Modal header-->
+                <!--begin::Modal body-->
+                <div class="modal-body py-10 px-lg-17">
+                    <!--begin::Scroll-->
+                    <div class="scroll-y me-n7 pe-7" id="kt_modal_edit_floors_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_edit_floors_header" data-kt-scroll-wrappers="#kt_modal_edit_floors_scroll" data-kt-scroll-offset="300px">
+                        <!--begin::Input group Floor-->
+                        <div class="row fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required col-md-8 fs-6 fw-bold mb-2">Bulunduğu Kat No</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <div class="col-md-4">
+                                <input type="number" name="Floor" class="form-control form-control-solid" />
+                            </div>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group Floor-->
+                        <!--begin::Input group SectionName-->
+                        <div class="row fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required col-md-6 fs-6 fw-bold mb-2">Bölüm Adı</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <div class="col-md-6">
+                                <input type="text" name="SectionName" class="form-control form-control-solid" />
+                            </div>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group SectionName-->
+                        <!--begin::Input group Gross-->
+                        <div class="row fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required col-md-8 fs-6 fw-bold mb-2">Brüt m2</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <div class="col-md-4">
+                                <input type="number" name="Gross" class="form-control form-control-solid" />
+                            </div>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group Gross-->
+                        <!--begin::Input group Net-->
+                        <div class="row fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required col-md-8 fs-6 fw-bold mb-2">Net m2</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <div class="col-md-4">
+                                <input type="number" name="Net" class="form-control form-control-solid" />
+                            </div>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group Net-->
+                        <!--begin::Input group Gabari-->
+                        <div class="row fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required col-md-8 fs-6 fw-bold mb-2">Gabari m2</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <div class="col-md-4">
+                                <input type="number" name="Gabari" class="form-control form-control-solid" />
+                            </div>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group Gabari-->
+                    </div>
+                    <!--end::Scroll-->
+                </div>
+                <!--end::Modal body-->
+                <!--begin::Modal footer-->
+                <div class="modal-footer flex-center">
+                    <!--begin::Button-->
+                    <button type="reset" id="kt_modal_edit_floors_cancel" class="btn btn-white me-3" data-bs-dismiss="modal">Vazgeç</button>
+                    <!--end::Button-->
+                    <!--begin::Button-->
+                    <button type="submit" id="kt_modal_edit_floors_submit" class="btn btn-primary">
+                        <span class="indicator-label">Kaydet</span>
+                        <span class="indicator-progress">
+                            Lütfen bekleyin...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
+                    <!--end::Button-->
+                </div>
+                <!--end::Modal footer-->
+            </form>
+            <!--end::Form-->
+        </div>
+    </div>
+</div>
+<!--end::Modal - Tenant - Edit-->
+
+
+@section PageScripts {
+    <!--begin::Page Vendors Javascript(used by this page)-->
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Page Vendors Javascript-->
+    <!--begin::Page Custom Javascript(used by this page)-->
+    <script src="~/assets/js/custom/apps/floor-easement/manage.js"></script>
+    <script src="~/assets/js/custom/apps/floor-easement/add.js"></script>
+    <script src="~/assets/js/custom/apps/floor-easement/edit.js"></script>
+}

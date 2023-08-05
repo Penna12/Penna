@@ -1,0 +1,137 @@
+﻿@{
+    ViewData["Title"] = "Blok Oluştur";
+}
+
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header">
+        <div class="card-title">
+            <h3>Proje Detayları</h3>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <div class="card-body p-0">
+            <!--begin::Table wrapper-->
+            <div class="table-responsive">
+                <!--begin::Table-->
+                <table class="table table-flush align-middle table-row-bordered table-row-solid gy-4 gs-9">
+                    <!--begin::Thead-->
+                    <thead class="border-gray-200 fs-5 fw-bold bg-lighten">
+                        <tr>
+                            <th class="min-w-250px">Proje Adı</th>
+                            <th class="min-w-100px">Blok Sayısı</th>
+                            <th class="min-w-150px">Açılan Blok Sayısı</th>
+                            <th class="min-w-150px">Kalan Blok Sayısı</th>
+                            <th class="min-w-150px"></th>
+                        </tr>
+                    </thead>
+                    <!--end::Thead-->
+                    <!--begin::Tbody-->
+                    <tbody class="fw-6 fw-bold text-gray-600">
+                        <tr>
+                            <td>
+                                <span class="text-primary">BMC MSB LOJMANLARI</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-light-success fs-7 fw-bolder">5</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-light-warning fs-7 fw-bolder">2</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-light-primary fs-7 fw-bolder">3</span>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary">Blokları Oluştur</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <!--end::Tbody-->
+                </table>
+                <!--end::Table-->
+            </div>
+            <!--end::Table wrapper-->
+        </div>
+    </div>
+</div>
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header">
+        <div class="card-title">
+            <h3>Yeni Blok Oluştur</h3>
+        </div>
+    </div>
+    <div class="card-body">
+        <form>
+            <div class="row d-flex">
+                <div class="col-md-3">
+                    <label>Blok Adı</label>
+                    <input type="text" name="name" class="form-control form-control-solid" placeholder="Blok adı girin" />
+                </div>
+                <div class="col-md-3">
+                    <label>Türü</label>
+                    <select name="turu" class="form-select form-select-solid">
+                        <option value="1">Blok</option>
+                        <option value="2">Ortak Alan</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label>Kat Sayısı</label>
+                    <input type="text" name="katsayisi" class="form-control form-control-solid" placeholder="kat sayısı girin" />
+                </div>
+                <div class="col-md-2">
+                    <label>Bodrum Kat Sayısı</label>
+                    <input type="text" name="katsayisi" class="form-control form-control-solid" placeholder="bodrum kat sayısı girin" />
+                </div>
+                <div class="col-md-2 justify-content-center">
+                    <input type="submit" class="btn btn-primary" value="Kaydet" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header">
+        <div class="card-title">
+            <h3>Oluşturulan Bloklar</h3>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-responsive table-bordered table-striped table-light">
+            <thead>
+                <tr>
+                    <th>Blok Adı</th>
+                    <th>Kat Sayısı</th>
+                    <th>Bodrum Kat Sayısı</th>
+                    <th>Tür</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>A1 Blok</td>
+                    <td>8</td>
+                    <td>3</td>
+                    <td>Blok</td>
+                    <td>
+                        <a asp-action="Detail" asp-route-id="1" class="btn btn-icon btn-sm btn-warning" title="Detay"><i class="far fa-eye"></i></a>
+                        <a href="" class="btn btn-icon btn-sm btn-primary" title="Düzenle"><i class="far fa-edit"></i></a>
+                        <a href="" class="btn btn-icon btn-sm btn-danger" title="Sil"><i class="far fa-trash-alt"></i></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>A2 Blok</td>
+                    <td>8</td>
+                    <td>3</td>
+                    <td>Blok</td>
+                    <td>
+                        <a asp-action="Detail" asp-route-id="2" class="btn btn-icon btn-sm btn-warning" title="Detay"><i class="far fa-eye"></i></a>
+                        <a href="" class="btn btn-icon btn-sm btn-primary" title="Düzenle"><i class="far fa-edit"></i></a>
+                        <a href="" class="btn btn-icon btn-sm btn-danger" title="Sil"><i class="far fa-trash-alt"></i></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

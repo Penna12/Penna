@@ -1,0 +1,82 @@
+﻿@model OfferCloseDto
+@{
+    ViewData["Title"] = Toolbar.Title;
+}
+@section Styles {
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+
+<div class="card">
+    <div class="card-header pt-9">
+        <h4>Teklif Kapatma</h4>
+    </div>
+    <div class="card-body pt-9">
+
+        <div class="row">
+            <div class="col-md-8">
+                <form class="form" asp-action="OfferClose" method="post" id="purchase_offer_close_form">
+                    <input type="hidden" asp-for="PurchaseType" />
+                    <input type="hidden" asp-for="PurchaseTenderId" />
+                    <input type="hidden" asp-for="PurchaseId" />
+
+                    <div class="fv-row mb-10">
+                        <label for="CompanyName" class="required form-label">Tedarikçi</label>
+                        <input type="text" asp-for="CompanyName" class="form-control form-control-solid" placeholder="Tedarikçi" />
+                    </div>
+
+                    <div class="fv-row mb-10">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="InvoiceDate" class="required form-label">Fatura Tarih / No</label>
+                                <input type="date" asp-for="InvoiceDate" class="form-control form-control-solid" placeholder="Fatura Tarihi"/>
+                                <span asp-validation-for="InvoiceDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="InvoiceNo" class="required form-label">Fatura Tarih / No</label>
+                                <input type="text" asp-for="InvoiceNo" class="form-control form-control-solid" placeholder="Fatura No"/>
+                                <span asp-validation-for="InvoiceNo" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fv-row mb-10">
+                        <label for="InvoiceAmount" class="required form-label">Fatura Tutarı</label>
+                        <input type="text" asp-for="InvoiceAmount" class="form-control form-control-solid" placeholder="Fatura Tutarı"/>
+                        <span asp-validation-for="InvoiceAmount" class="text-danger"></span>
+                    </div>
+
+                    <div class="fv-row mb-10">
+                        <label for="Deadline" class="required form-label">Termin Tarihi</label>
+                        <input type="date" asp-for="Deadline" class="form-control form-control-solid" placeholder="Termin Tarihi"/>
+                        <span asp-validation-for="Deadline" class="text-danger"></span>
+                    </div>
+
+                    <div class="flex-center">
+                        <button type="submit" id="add_direct_purchase_submit" class="btn btn-primary">
+                            <span class="indicator-label"><i class="fas fa-save"></i> Kaydet</span>
+                            <span class="indicator-progress">
+                                Lütfen bekleyin...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span>
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section PageScripts {
+    @*<script src="~/assets/js/custom/apps/purchase/offer-close.js"></script>*@
+    <script>
+        <partial name="_ValidationScriptsPartial">
+    </script>
+}

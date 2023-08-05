@@ -1,0 +1,148 @@
+﻿
+@{
+    TenantInfoDto tenantInfo = ViewData["TenantInfoDto"] as TenantInfoDto;
+    if (tenantInfo != null)
+    {
+        <!--begin::Row-->
+        <div class="row mb-7">
+            <!--begin::Label-->
+            <label class="col-lg-4 fw-bold text-muted">Ünvan</label>
+            <!--end::Label-->
+            <!--begin::Col-->
+            <div class="col-lg-8">
+                <span class="fw-bolder fs-6 text-dark">@tenantInfo.Title</span>
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Row-->
+        <!--begin::Row-->
+        <div class="row mb-7">
+            <!--begin::Label-->
+            <label class="col-lg-4 fw-bold text-muted">Ad Soyad</label>
+            <!--end::Label-->
+            <!--begin::Col-->
+            <div class="col-lg-8">
+                <span class="fw-bolder fs-6 text-dark">@tenantInfo.FullName</span>
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Row-->
+        <!--begin::Input group-->
+        <div class="row mb-7">
+            <!--begin::Label-->
+            <label class="col-lg-4 fw-bold text-muted">
+                Telefon
+            </label>
+            <!--end::Label-->
+            <!--begin::Col-->
+            <div class="col-lg-8 d-flex align-items-center">
+                <span class="fw-bolder fs-6 me-2">@tenantInfo.CountryDialCode - @tenantInfo.Phone</span>
+                <span class="badge badge-success">Doğrulandı</span>
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Input group-->
+        <!--begin::Input group-->
+        <div class="row mb-7">
+            <!--begin::Label-->
+            <label class="col-lg-4 fw-bold text-muted">Eposta</label>
+            <!--end::Label-->
+            <!--begin::Col-->
+            <div class="col-lg-8">
+                <a href="mailto:@tenantInfo?.Email" class="fw-bold fs-6 text-dark text-hover-primary">@tenantInfo?.Email</a>
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Input group-->
+        <!--begin::Input group-->
+        <div class="row mb-7">
+            <!--begin::Label-->
+            <label class="col-lg-4 fw-bold text-muted">Adres</label>
+            <!--end::Label-->
+            <!--begin::Col-->
+            <div class="col-lg-8 fv-row">
+                <p class="fw-bold fs-6">@tenantInfo?.Address</p>
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Input group-->
+        <!--begin::Input group-->
+        <div class="row mb-7">
+            <!--begin::Label-->
+            <label class="col-lg-4 fw-bold text-muted"> Şehir / Ülke </label>
+            <!--end::Label-->
+            <!--begin::Col-->
+            <div class="col-lg-8">
+                <span class="fw-bolder fs-6 text-dark">@tenantInfo?.City?.Name - @tenantInfo?.Country?.Name</span>
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Input group-->
+        <!--begin::Input group-->
+        <div class="row mb-7">
+            <!--begin::Label-->
+            <label class="col-lg-4 fw-bold text-muted">Vergi No/TC Kimlik No</label>
+            <!--end::Label-->
+            <!--begin::Col-->
+            <div class="col-lg-8">
+                <span class="fw-bolder fs-6 text-dark">@tenantInfo?.TaxId @tenantInfo?.TaxOffice</span>
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Input group-->
+        <!--begin::Input group-->
+        <div class="row mb-10">
+            <!--begin::Label-->
+            <label class="col-lg-4 fw-bold text-muted">Durumu</label>
+            <!--begin::Label-->
+            <!--begin::Label-->
+            <div class="col-lg-8">
+                <span class="fw-bold fs-6">@(tenantInfo != null && tenantInfo.IsActive ? "Aktif" : "Pasif")</span>
+            </div>
+            <!--begin::Label-->
+        </div>
+        <!--end::Input group-->
+        <!--begin::Input group-->
+        <div class="row mb-10">
+            <!--begin::Label-->
+            <label class="col-lg-4 fw-bold text-muted">Hesap Kilit Durumu</label>
+            <!--begin::Label-->
+            <!--begin::Label-->
+            <div class="col-lg-8">
+                <span class="fw-bold fs-6">@(tenantInfo != null && tenantInfo.IsLocked ? "Kilitlendi" : "Açık")</span>
+            </div>
+            <!--begin::Label-->
+        </div>
+        <!--end::Input group-->
+        <!--begin::Notice-->
+        <div class="notice d-flex bg-light-warning rounded border-warning border border-dashed p-6 d-none">
+            <!--begin::Icon-->
+            <!--begin::Svg Icon | path: icons/duotone/Code/Warning-1-circle.svg-->
+            <span class="svg-icon svg-icon-2tx svg-icon-warning me-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                    <circle fill="#000000" opacity="0.3" cx="12" cy="12" r="10" />
+                    <rect fill="#000000" x="11" y="7" width="2" height="8" rx="1" />
+                    <rect fill="#000000" x="11" y="16" width="2" height="2" rx="1" />
+                </svg>
+            </span>
+            <!--end::Svg Icon-->
+            <!--end::Icon-->
+            @{ if (true)
+                { <!--begin::Wrapper-->
+                    <div class="d-flex flex-stack flex-grow-1">
+                        <!--begin::Content-->
+                        <div class="fw-bold">
+                            <h4 class="text-gray-800 fw-bolder">Bu müşteriye dikkat!</h4>
+                            <div class="fs-6 text-gray-600">
+                                Ödenmemiş, Bekleyen bir adet ödemesi var,
+                                <a class="fw-bolder" href="account/billing.html">Ödeme tablosu</a>.
+                            </div>
+                        </div>
+                        <!--end::Content-->
+                    </div> <!--end::Wrapper--> } }
+
+        </div>
+        <!--end::Notice-->
+    }
+}
+

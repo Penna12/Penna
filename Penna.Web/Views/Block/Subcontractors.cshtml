@@ -1,0 +1,148 @@
+﻿@model BlockSubcontractorDto
+@using Penna.Core.Extensions
+@{
+    ViewData["Title"] = Model.Block.Name + " Taşeronları";
+}
+
+@section Styles {
+    <!--begin::Page Vendor Stylesheets(used by this page)-->
+    <link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Page Vendor Stylesheets-->
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+
+<div class="card">
+    <div class="card-header border-0">
+        <div class="card-title">
+            <h2>Blok Detayları</h2>
+        </div>
+    </div>
+    <div class="card-body pt-0 pb-5">
+        <!--begin::Table wrapper-->
+        <div class="table-responsive">
+            <!--begin::Table-->
+            <table class="table align-middle table-row-dashed gy-5" id="kt_block_info_table">
+                <!--begin::Table head-->
+                <thead class="border-bottom border-gray-200 fs-7 fw-bolder">
+                    <!--begin::Table row-->
+                    <tr class="text-start text-gray-400 text-uppercase gs-0">
+                        <th class="min-w-100px">Blok Adı</th>
+                        <th class="min-w-100px">Kat Sayısı</th>
+                        <th class="min-w-100px">Bodrum Kat Sayısı</th>
+                        <th class="min-w-100px">Kat Başına Daire</th>
+                        <th class="min-w-100px">Blok Hesabı</th>
+                        <th class="min-w-100px">Daire Hesabı</th>
+                        <th class="min-w-100px">Ortak Alan Hesabı</th>
+                    </tr>
+                    <!--end::Table row-->
+                </thead>
+                <!--end::Table head-->
+                <!--begin::Table body-->
+                <tbody class="fs-6 fw-bold text-gray-600">
+                    <tr>
+                        <td>@Model.Block.Name</td>
+                        <td>@Model.Block.FloorCount</td>
+                        <td>@Model.Block.BasementCount</td>
+                        <td>@Model.Block.ApartmentCount</td>
+                        <td>@Model.Block.BlockCostCalculation.GetDisplayName()</td>
+                        <td>@Model.Block.ApartmentCostCalculation.GetDisplayName()</td>
+                        <td>@Model.Block.PublicAreaCostCalculation.GetDisplayName()</td>
+                    </tr>
+                </tbody>
+                <!--end::Table body-->
+            </table>
+            <!--end::Table-->
+        </div>
+        <!--end::Table wrapper-->
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-3">
+        <div class="card pt-4 mb-6">
+            <div class="card-header border-0">
+                <div class="card-title">
+                    <h2>Blok-Taşeron Atama</h2>
+                </div>
+            </div>
+            <div class="card-body">
+                <form class="form" action="#" method="post" id="kt_add_subcontractor_form" data-kt-redirect="/Block/Subcontractors">
+                    <div class="fv-row mb-7">
+                        <label class="required fs-6 fw-bold mb-2">Firma Adı</label>
+                        <select name="CurrentAccountId" asp-items="Model.SubcontractorList" class="form-select form-check-solid fw-bolder">
+                            <option value="">--- Taşeron Firma seçiniz ---</option>
+                        </select>
+                    </div>
+                    <div class="fv-row mb-7">
+                        <label class="fs-6 fw-bold mb-2">Firma Temsilcisi</label>
+                        <input type="text" name="CompanyRepresentative" class="form-control form-control-solid fw-bolder" readonly />
+                    </div>
+                    <div class="fv-row mb-7">
+                        <label class="required fs-6 fw-bold mb-2">Telefon</label>
+                        <input type="text" name="Phone" class="form-control form-control-solid text-gray-600" />
+                    </div>
+                    <div class="fv-row mb-7">
+                        <label class="required fs-6 fw-bold mb-2">Yüklendiği İş</label>
+                        <select name="BusinessGroupId" asp-items="@Html.GetEnumSelectList<BusinessGroupEnum>()" class="form-select form-check-solid fw-bolder" data-control="select2" data-placeholder="İş grubu seçiniz" data-allow-clear="true" multiple="multiple">
+                        </select>
+                    </div>
+                    <div class="fv-row mb-7">
+                        <!--begin::Button-->
+                        <button type="submit" id="kt_add_block_subcontractors_submit" class="btn btn-flex btn-primary w-100">
+                            <!--begin::Svg Icon | path: icons/duotone/Interface/Plus-Square.svg-->
+                            <span class="svg-icon svg-icon-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path opacity="0.25" fill-rule="evenodd" clip-rule="evenodd" d="M6.54184 2.36899C4.34504 2.65912 2.65912 4.34504 2.36899 6.54184C2.16953 8.05208 2 9.94127 2 12C2 14.0587 2.16953 15.9479 2.36899 17.4582C2.65912 19.655 4.34504 21.3409 6.54184 21.631C8.05208 21.8305 9.94127 22 12 22C14.0587 22 15.9479 21.8305 17.4582 21.631C19.655 21.3409 21.3409 19.655 21.631 17.4582C21.8305 15.9479 22 14.0587 22 12C22 9.94127 21.8305 8.05208 21.631 6.54184C21.3409 4.34504 19.655 2.65912 17.4582 2.36899C15.9479 2.16953 14.0587 2 12 2C9.94127 2 8.05208 2.16953 6.54184 2.36899Z" fill="#12131A"></path>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 17C12.5523 17 13 16.5523 13 16V13H16C16.5523 13 17 12.5523 17 12C17 11.4477 16.5523 11 16 11H13V8C13 7.44772 12.5523 7 12 7C11.4477 7 11 7.44772 11 8V11H8C7.44772 11 7 11.4477 7 12C7 12.5523 7.44771 13 8 13H11V16C11 16.5523 11.4477 17 12 17Z" fill="#12131A"></path>
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                            <span class="indicator-label">Kaydet</span>
+                            <span class="indicator-progress">
+                                Lütfen bekleyin...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card pt-4 mb-6">
+            <div class="card-header border-0">
+                <div class="card-title">
+                    <h2>Atanmış Blok Taşeronları</h2>
+                </div>
+            </div>
+            <div class="card-body">
+                <table id="kt_block_subcontractors_table" class="table align-middle table-row-dashed table-striped table-sm fs-6 gy-1 w-100">
+                    <thead>
+                        <tr>
+                            <th class="min-w-125px">Taşeron Firma Adı</th>
+                            <th class="min-w-125px">Yetkili Adı</th>
+                            <th class="min-w-125px">Telefon</th>
+                            <th class="min-w-125px">İş Grubu</th>
+                            <th class="text-end min-w-70px"></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section PageScripts {
+    <!--begin::Page Vendors Javascript(used by this page)-->
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Page Vendors Javascript-->
+    <!--begin::Page Custom Javascript(used by this page)-->
+    <script src="~/assets/js/custom/apps/block/subcontractor/list.js"></script>
+    <script src="~/assets/js/custom/apps/block/subcontractor/add.js"></script>
+}

@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Purchase> 
+@{
+    ViewData["Title"] = Toolbar.Title;
+}
+
+@section Styles {
+    <!--begin::Page Vendor Stylesheets(used by this page)-->
+    <link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Page Vendor Stylesheets-->
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+
+<div class="card">
+    <div class="card-header border-0 pt-10">
+        <!--begin::title-->
+        <h2 class="fw-bolder">Teklif Bekleyen Siparişler</h2>
+        <!--end::title-->
+    </div>
+    <div class="card-body pt-0">
+        <div id="kt_datatable_pending_offer_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+            <div class="row"><div class="col-sm-6 d-flex align-items-center justify-conten-start"><div class="dataTables_length d-none" id="kt_datatable_pending_offer_length"><label>Göster <select name="kt_datatable_pending_offer_length" aria-controls="kt_datatable_pending_offer" class="form-select form-select-sm form-select-solid"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select></label></div></div><div class="col-sm-6 d-flex align-items-center justify-content-end"><div id="kt_datatable_pending_offer_filter" class="dataTables_filter"><label>Ara:<input type="search" data-kt-pending-offer-table-filter="search" class="form-control form-control-sm form-control-solid" placeholder="" aria-controls="kt_datatable_pending_offer"></label></div></div></div>
+            <div class="table-responsive">
+                <table id="kt_supplier_offers_table" class="table table-striped table-row-bordered gy-5 gs-7 border w-100">
+                    <thead class="border-gray-200 fs-5 fw-bold bg-light-dark">
+                        <tr class="fw-bolder fs-6 text-gray-800 px-7">
+                            <th  class="min-w-100px">Tarih</th>
+                            <th  class="min-w-125px">Ürün Adı</th>
+                            <th  class="min-w-100px">Miktar</th>
+                            <th  class="min-w-100px">Termin Tarihi</th>
+                            <th  class="min-w-125px">Teklif Bitiş Zamanı</th>
+                            <th  class="min-w-150px">Not</th>
+                            <th  class="min-w-70px">Öncelik</th>
+                            <th  class="min-w-70px">Teklif Durumu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Count() > 0)
+                        {
+                            foreach (var purchase in Model)
+                            {
+                                <tr>
+                                    <td>@purchase.PurchaseDate.ToString("d")</td>
+                                    <td>@purchase.Product.Name</td>
+                                    <td>@purchase.Quantity</td>
+                                    <td>@purchase.RequestedDeliveryDate.ToString("d")</td>
+                                    <td>@purchase.FinalBidDateTime.GetValueOrDefault().ToString("g")</td>
+                                    <td>@purchase.Description</td>
+                                    <td><span class="badge badge-primary">@purchase.PurchaseRequest.Priority.GetDisplayName()</span></td>
+                                    <td class="d-flex align-items-center justify-content-center">
+                                        <a asp-action="GiveOffer" asp-controller="SupplierPurchase" asp-route-id="@purchase.Id" class="btn btn-icon btn-sm btn-primary" data-bs-toggle="tooltip" data-bs-custom-class="tooltip-dark" data-bs-placement="left" title="Teklif Ver"><i class="fab fa-buffer"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section PageScripts {
+    <!--begin::Page Vendors Javascript(used by this page)-->
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Page Vendors Javascript-->
+    <!--begin::Page Custom Javascript(used by this page)-->
+    <script>
+        dataTable = $("#kt_supplier_offers_table").DataTable({ "pageLength": 10, info: false, language: { sLengthMenu: "Sayfada _MENU_ kayıt göster", } });
+    </script>
+}
+

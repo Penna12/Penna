@@ -1,0 +1,67 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@using Penna.Entities.Models
+@using Penna.Core.Utilities.Constants
+@inject SignInManager<AppUser> SignInManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    var fullName = User.FindFirst("UserFullName")?.Value;
+    var roleName = User.FindFirst(c => c.Type == ClaimTypes.Role)?.Value;
+    var pictureUrl = User.FindFirst("PictureUrl")?.Value;
+    pictureUrl = string.IsNullOrEmpty(pictureUrl) ? "~/assets/media/avatars/blank.png" : SD.ProfileImagePath + pictureUrl;
+
+<div class="d-flex align-items-center ms-1 ms-lg-3" id="kt_header_user_menu_toggle">
+    <!--begin::Menu wrapper-->
+    <div class="cursor-pointer symbol symbol-30px symbol-md-40px" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end" data-kt-menu-flip="bottom">
+        <img src="@pictureUrl" alt="@fullName" />
+    </div>
+    <!--begin::Menu-->
+    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold py-4 fs-6 w-275px" data-kt-menu="true">
+        <!--begin::Menu item-->
+        <div class="menu-item px-3">
+            <div class="menu-content d-flex align-items-center px-3">
+                <!--begin::Avatar-->
+                <div class="symbol symbol-50px me-5">
+                    <img alt="@fullName" src="@pictureUrl" />
+                </div>
+                <!--end::Avatar-->
+                <!--begin::Username-->
+                <div class="d-flex flex-column">
+                    <div class="fw-bolder d-flex align-items-center fs-5">
+                        @fullName
+                    </div>
+                    <a href="#" class="fw-bold text-muted text-hover-primary fs-7">@User.Identity.Name!</a>
+                    <span class="badge badge-light-success fw-bolder fs-8 px-2 py-1 w-100">@roleName</span>
+                </div>
+                <!--end::Username-->
+            </div>
+        </div>
+        <!--end::Menu item-->
+        <!--begin::Menu separator-->
+        <div class="separator my-2"></div>
+        <!--end::Menu separator-->
+        <!--begin::Menu item-->
+        <div class="menu-item px-5">
+            <a asp-action="Myprofile" asp-controller="Account" asp-area="" class="menu-link px-5 @(TempData["active"]?.ToString()=="MyProfile" ? "active" : "")">
+            Profilim</a>
+        </div>
+        <!--end::Menu item-->
+        <!--begin::Menu item-->
+        <div class="menu-item px-5">
+            <a asp-action="ChangePassword" asp-controller="Account" asp-area="" class="menu-link px-5 @(TempData["active"]?.ToString()=="ChangePassword" ? "active" : "")">
+            Şifre Değiştir</a>
+        </div>
+        <!--end::Menu item-->
+        <!--begin::Menu separator-->
+        <div class="separator my-2"></div>
+        <!--end::Menu separator-->
+        <!--begin::Menu item-->
+        <div class="menu-item px-5">
+            <a asp-action="Logout" asp-controller="Account" asp-area="" class="menu-link px-5">Çıkış</a>
+        </div>
+        <!--end::Menu item-->
+    </div>
+    <!--end::Menu-->
+    <!--end::Menu wrapper-->
+</div>}

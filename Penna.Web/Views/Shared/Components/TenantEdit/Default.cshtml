@@ -1,0 +1,136 @@
+﻿@{
+    TenantEditDto tenantEdit = ViewData["TenantEditDto"] as TenantEditDto;
+    if (tenantEdit == null) { tenantEdit = new TenantEditDto(); }
+    if (tenantEdit != null)
+    {
+        <input type="hidden" asp-for="@tenantEdit.Id" name="Id" />
+        <input type="hidden" asp-for="@tenantEdit.CountryDialCode" name="CountryDialCode" />
+        <input type="hidden" asp-for="@tenantEdit.IsActive" name="IsActive" />
+        <input type="hidden" asp-for="@tenantEdit.IsLocked" name="IsLocked" />
+        <input type="hidden" asp-for="@tenantEdit.CreatedBy" name="CreatedBy" />
+        <input type="hidden" asp-for="@tenantEdit.CreatedDate" name="CreatedDate" />
+        <input type="hidden" asp-for="@tenantEdit.UpdatedBy" name="UpdatedBy" />
+        <input type="hidden" asp-for="@tenantEdit.UpdatedDate" name="UpdatedDate" />
+
+        <!--begin::Input group Title-->
+        <div class="fv-row mb-7">
+            <!--begin::Label-->
+            <label class="required fs-6 fw-bold mb-2">Ünvan</label>
+            <!--end::Label-->
+            <!--begin::Input-->
+            <input type="text" asp-for="@tenantEdit.Title" name="Title" class="form-control form-control-solid" placeholder="Ünvan girinizi" />
+            <!--end::Input-->
+        </div> <!--end::Input group Title--> <!--begin::Input group FullName-->
+        <div class="fv-row mb-7">
+            <!--begin::Label-->
+            <label class="required fs-6 fw-bold mb-2">Ad Soyad</label>
+            <!--end::Label-->
+            <!--begin::Input-->
+            <input type="text" asp-for="@tenantEdit.FullName" name="FullName" class="form-control form-control-solid" placeholder="Ad Soyad giriniz" />
+            <!--end::Input-->
+        </div> <!--end::Input group FullName--> <!--begin::Input group Email-->
+        <div class="fv-row mb-7">
+            <!--begin::Label-->
+            <label class="fs-6 fw-bold mb-2">
+                <span class="required">Email</span>
+                <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Eposta hesabı aktifleştirmek için gereklidir"></i>
+            </label>
+            <!--end::Label-->
+            <!--begin::Input-->
+            <input type="text" asp-for="@tenantEdit.Email" name="Email" class="form-control form-control-solid" placeholder="Eposta giriniz" />
+            <!--end::Input-->
+        </div> <!--end::Input group Email--> <!--begin::Input group PhoneNumber-->
+        <div class="fv-row mb-15">
+            <!--begin::Label-->
+            <label class="required fs-6 fw-bold mb-2">Telefon</label>
+            <!--end::Label-->
+            <!--begin::Input-->
+            <input type="text" asp-for="@tenantEdit.Phone" name="Phone" class="form-control form-control-solid" data-inputmax="(999) 999-9999" placeholder="Telefon no (999) 999-9999 formatında giriniz" />
+            <!--end::Input-->
+        </div> <!--end::Input group PhoneNumber--> <!--begin::Input group TaxId & TaxOffice-->
+        <div class="row g-9 mb-7">
+            <!--begin::Col TaxId-->
+            <div class="col-md-6 fv-row">
+                <!--begin::Label-->
+                <label class="fs-6 fw-bold mb-2">
+                    <span class="required">Vergi No</span>
+                    <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Vergi No veya TC Kimlik No girmelisiniz"></i>
+                </label>
+                <!--end::Label-->
+                <!--begin::Input-->
+                <input type="text" asp-for="@tenantEdit.TaxId" name="TaxId" class="form-control form-control-solid" maxlength="11" data-inputmax="99999999999" placeholder="11 haneli T.C No veya 10 haneli Vergi No Giriniz." />
+                <!--end::Input-->
+            </div>
+            <!--end::Col TaxId-->
+            <!--begin::Col TaxOffice-->
+            <div class="col-md-6 fv-row">
+                <!--begin::Label-->
+                <label class="fs-6 fw-bold mb-2"> Vergi Dairesi </label>
+                <!--end::Label-->
+                <!--begin::Input taxOffice-->
+                <input type="text" asp-for="@tenantEdit.TaxOffice" name="TaxOffice" class="form-control form-control-solid" placeholder="Vergi Dairesi" />
+                <!--end::Input taxOffice-->
+            </div>
+            <!--end::Col TaxOffice-->
+        </div> <!--end::Input group--> <!--begin::Address toggle-->
+        <div class="fw-bolder fs-3 rotate collapsible mb-7" data-bs-toggle="collapse" href="#kt_modal_add_tenants_address_info" role="button" aria-expanded="false" aria-controls="kt_customer_view_details">
+            Adres Bilgisi
+            <span class="ms-2 rotate-180">
+                <!--begin::Svg Icon | path: icons/duotone/Navigation/Angle-down.svg-->
+                <span class="svg-icon svg-icon-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <polygon points="0 0 24 0 24 24 0 24" />
+                            <path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-180.000000) translate(-12.000003, -11.999999)" />
+                        </g>
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->
+            </span>
+        </div> <!--end::Address toggle--> <!--begin::Address form-->
+        <div id="kt_modal_add_tenants_address_info" class="collapse show">
+            <!--begin::Input group Address-->
+            <div class="d-flex flex-column mb-7 fv-row">
+                <!--begin::Label-->
+                <label class="fs-6 fw-bold mb-2">Adres</label>
+                <!--end::Label-->
+                <!--begin::Input-->
+                <textarea asp-for="@tenantEdit.Address" name="Address" class="form-control form-control-solid" placeholder="Adres bilgisi"></textarea>
+                <!--end::Input-->
+            </div>
+            <!--end::Input group Address-->
+            <!--begin::Input group City & Country-->
+            <div class="row g-9 mb-7">
+                <!--begin::Col Country-->
+                <div class="col-md-6 fv-row">
+                    <!--begin::Label-->
+                    <label class="fs-6 fw-bold mb-2">
+                        <span class="required">Ülke</span>
+                        <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Ülke"></i>
+                    </label>
+                    <!--end::Label-->
+                    <!--begin::Input country-->
+                    <select asp-for="@tenantEdit.CountryId" name="CountryId" asp-items="@tenantEdit.CountryList" aria-label="Select a Country" data-control="select2" data-dropdown-parent="#kt_modal_edit_tenants" class="form-select form-select-solid fw-bolder" data-placeholder="- Lütfen bir ülke seçiniz">
+                        <option value="">Ülke seç...</option>
+                    </select>
+
+                    <!--end::Input country-->
+                </div>
+                <!--end::Col Country-->
+                <!--begin::Col City-->
+                <div class="col-md-6 fv-row">
+                    <!--begin::Label-->
+                    <label class="required fs-6 fw-bold mb-2">Şehir</label>
+                    <!--end::Label-->
+                    <!--begin::Input-->
+                    <select asp-for="@tenantEdit.CityId" name="CityId" asp-items="@tenantEdit.CityList" class="form-select form-select-solid" data-control="select2" data-hide-search="false" data-placeholder="- Lütfen bir şehir seçiniz">
+                        <option value="">Şehir seç...</option>
+                    </select>
+                    <!--end::Input-->
+                </div>
+                <!--end::Col City-->
+            </div>
+            <!--end::Input group-->
+        </div> <!--end::Address form-->
+    }
+}

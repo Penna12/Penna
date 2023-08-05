@@ -1,0 +1,30 @@
+﻿@model ErrorViewModel
+
+@{
+    ViewData["Title"] = Model.PageTitle;
+}
+
+<h1 class="text-danger">@Model.PageTitle</h1>
+<h2 class="text-danger">İşleminiz gerçekleştirilirken bir hata oluştu.</h2>
+<h5>Lütfen @Model.Email adresiyle iletişime geçin.</h5>
+<hr />
+
+<h3>Hata Detayları:</h3>
+<div class="alert alert-danger">
+    <h5>Exception Path</h5>
+    <hr />
+    <p>@Model.ExceptionPath</p>
+</div>
+
+<div class="alert alert-danger">
+    <h5>Exception Message</h5>
+    <hr />
+    <p>@Model.ExceptionMessage</p>
+</div>
+
+<div class="alert alert-danger">
+    <h5>Exception Stack Trace</h5>
+    <hr />
+    <p>@Model.Stacktrace</p>
+</div>
+

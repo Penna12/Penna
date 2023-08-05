@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewData["Title"] = Toolbar.Title;
+}
+
+@section Styles {
+    <!--begin::Page Vendor Stylesheets(used by this page)-->
+    <link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Page Vendor Stylesheets-->
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+
+<div class="card">
+    <div class="card-body">
+        <div id="kt_datatable_example_5_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+            <div class="row"><div class="col-sm-6 d-flex align-items-center justify-conten-start"><div class="dataTables_length" id="kt_datatable_example_5_length"><label>Show <select name="kt_datatable_example_5_length" aria-controls="kt_datatable_example_5" class="form-select form-select-sm form-select-solid"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select></label></div></div><div class="col-sm-6 d-flex align-items-center justify-content-end"><div id="kt_datatable_example_5_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control form-control-sm form-control-solid" placeholder="" aria-controls="kt_datatable_example_5"></label></div></div></div>
+            <div class="table-responsive">
+                <table id="kt_purchase_requested_table" class="table table-striped table-row-bordered gy-5 gs-7 border">
+                    <thead>
+                        <tr class="fw-bolder fs-6 text-gray-800 px-7">
+                            <th>Tarih</th>
+                            <th>Ürün Adı</th>
+                            <th>Miktar</th>
+                            <th>Termin Tarihi</th>
+                            <th>Not</th>
+                            <th>Öncelik</th>
+                            <th><!--Doğrudan,Teklif,ihale 3 adet satın alma butonu gelecek--></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section PageScripts {
+    <!--begin::Page Vendors Javascript(used by this page)-->
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Page Vendors Javascript-->
+    <!--begin::Page Custom Javascript(used by this page)-->
+    <script src="~/assets/js/custom/apps/purchase/list.js"></script>
+}

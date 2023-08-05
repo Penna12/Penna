@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20210925132421_BlockApartmentPFilesBTeamBSubcontInstallCADetailAddToDB.cs" />
+    <Compile Remove="Migrations\20210925132421_BlockApartmentPFilesBTeamBSubcontInstallCADetailAddToDB.Designer.cs" />
+    <Compile Remove="Migrations\20210929081904_RequiredChangedFromProject.cs" />
+    <Compile Remove="Migrations\20210929081904_RequiredChangedFromProject.Designer.cs" />
+    <Compile Remove="Migrations\20211006220535_AddTenantIdTo3Table.cs" />
+    <Compile Remove="Migrations\20211006220535_AddTenantIdTo3Table.Designer.cs" />
+    <Compile Remove="Migrations\20211007073451_AddTenantIdTo3Table.cs" />
+    <Compile Remove="Migrations\20211007073451_AddTenantIdTo3Table.Designer.cs" />
+    <Compile Remove="Migrations\20211015132606_ChangeTypeComitmentDateFromProject.cs" />
+    <Compile Remove="Migrations\20211015132606_ChangeTypeComitmentDateFromProject.Designer.cs" />
+    <Compile Remove="Migrations\20211115211902_CorrectNameSupplierCurrentAccountId.cs" />
+    <Compile Remove="Migrations\20211115211902_CorrectNameSupplierCurrentAccountId.Designer.cs" />
+    <Compile Remove="Migrations\20211206153033_AddWorkPlanAndDetail.cs" />
+    <Compile Remove="Migrations\20211206153033_AddWorkPlanAndDetail.Designer.cs" />
+    <Compile Remove="Migrations\20211206153600_AddWorkPlanAndDetail.cs" />
+    <Compile Remove="Migrations\20211206153600_AddWorkPlanAndDetail.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.90" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.18">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.18">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Penna.Core\Penna.Core.csproj" />
+    <ProjectReference Include="..\Penna.Entities\Penna.Entities.csproj" />
+  </ItemGroup>
+
+</Project>

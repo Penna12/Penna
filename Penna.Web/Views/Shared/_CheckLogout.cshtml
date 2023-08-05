@@ -1,0 +1,24 @@
+﻿<script>
+    //var sayac = 0;
+    //jQuery(function () {
+    //    jQuery(window).bind('beforeunload', function () {
+    //        if (sayac == 0) {
+    //            $.ajax({
+    //                async: false,
+    //                url: '/Account/LogOut'
+    //            });
+    //        }
+    //        sayac++;
+    //    });
+    //});
+
+    window.onbeforeunload = function () {
+        if ((window.event.clientX < 0) || (window.event.clientY < 0) || (window.event.clientX < -80)) {
+            //Browser kapaniyor varsa session kapat yada başka birşey
+            $.ajax({
+                async: false,
+                url: '/Account/LogOut'
+            });
+        }
+    }
+</script>

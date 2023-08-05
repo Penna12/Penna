@@ -1,0 +1,168 @@
+﻿@model Purchase
+@{
+    ViewData["Title"] = Toolbar.Title;
+    var firma = Model.PurchaseTenders.Where(x => x.Amount > 0).OrderBy(t => t.Amount).First();
+}
+@section Styles {
+    <!--begin::Page Vendor Stylesheets(used by this page)-->
+    <link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Page Vendor Stylesheets-->
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+
+<div class="card">
+    <div class="card-body border-0 pt-10">
+        <!--begin::title-->
+        <div class="row">
+            <div class="col-sm-6 d-flex align-items-center justify-conten-start">
+                <h2 class="fw-bolder">Teklif Değerlendirme</h2>
+            </div>
+            <div class="col-sm-6 d-flex align-items-center justify-content-end">
+                <a asp-action="PendingOffer" asp-controller="Purchase" class="btn btn-danger"><i class="far fa-list-alt"></i> Teklif Bekleyen Siparişler</a>
+            </div>
+        </div>
+        <!--end::title-->
+    </div>
+
+    <div class="card-body border-0 pt-10">
+        <div class="d-flex flex-wrap">
+            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                <!--begin::Number-->
+                <div class="d-flex align-items-center">
+                    <div class="fs-4 fw-bolder">@Model.PurchaseDate.ToString("d")</div>
+                </div>
+                <!--end::Number-->
+                <!--begin::Label-->
+                <div class="fw-bold fs-6 text-gray-400">Tarih</div>
+                <!--end::Label-->
+            </div>
+            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                <!--begin::Number-->
+                <div class="d-flex align-items-center">
+                    <div class="fs-4 fw-bolder">@Model.FinalBidDateTime.GetValueOrDefault().ToString("g")</div>
+                </div>
+                <!--end::Number-->
+                <!--begin::Label-->
+                <div class="fw-bold fs-6 text-gray-400">Teklif Bitiş Zamanı</div>
+                <!--end::Label-->
+            </div>
+            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                <!--begin::Number-->
+                <div class="d-flex align-items-center">
+                    <div class="fs-4 fw-bolder">@Model.RequestedDeliveryDate.ToString("d")</div>
+                </div>
+                <!--end::Number-->
+                <!--begin::Label-->
+                <div class="fw-bold fs-6 text-gray-400">Talep Edilen Termin Tarihi</div>
+                <!--end::Label-->
+            </div>
+
+            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                <!--begin::Number-->
+                <div class="d-flex align-items-center">
+                    <div class="fs-4 fw-bolder">@Model.Product.Name</div>
+                </div>
+                <!--end::Number-->
+                <!--begin::Label-->
+                <div class="fw-bold fs-6 text-gray-400">Alınacak Malzeme</div>
+                <!--end::Label-->
+            </div>
+            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                <!--begin::Number-->
+                <div class="d-flex align-items-center">
+                    <div class="fs-4 fw-bolder">@Model.Quantity @Model.Product.Unit.Name</div>
+                </div>
+                <!--end::Number-->
+                <!--begin::Label-->
+                <div class="fw-bold fs-6 text-gray-400">Miktar</div>
+                <!--end::Label-->
+            </div>
+            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                <!--begin::Number-->
+                <div class="d-flex align-items-center">
+                    <div class="fs-4 fw-bolder">@Model.Description &nbsp;</div>
+                </div>
+                <!--end::Number-->
+                <!--begin::Label-->
+                <div class="fw-bold fs-6 text-gray-400">Açıklama</div>
+                <!--end::Label-->
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body pt-0">
+        <div id="kt_datatable_offer_status_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+            <div class="row">
+                <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
+					<span class="svg-icon svg-icon-2tx svg-icon-primary me-4">
+						<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+							<path opacity="0.3" d="M5.33317 13.3333H10.6665V22.6666H13.3332V13.3333H18.6665V22.6666H21.3332V13.3333H26.6665V22.6666C28.1393 22.6666 29.3332 23.8605 29.3332 25.3333V26.6666C29.3332 28.1393 28.1393 29.3333 26.6665 29.3333H5.33317C3.86041 29.3333 2.6665 28.1393 2.6665 26.6666V25.3333C2.6665 23.8605 3.86041 22.6666 5.33317 22.6666V13.3333Z" fill="#000000"></path>
+							<path d="M2.6665 9.8054C2.6665 8.71499 3.33037 7.73443 4.3428 7.32947L15.0095 3.0628C15.6452 2.80849 16.3545 2.80849 16.9902 3.0628L27.6569 7.32947C28.6693 7.73443 29.3332 8.71499 29.3332 9.8054V10.6666C29.3332 12.1394 28.1393 13.3333 26.6665 13.3333H5.33317C3.86041 13.3333 2.6665 12.1394 2.6665 10.6666V9.8054Z" fill="#000000"></path>
+						</svg>
+					</span>
+					<div class="d-flex flex-stack flex-grow-1 flex-wrap flex-md-nowrap">
+						<div class="mb-3 mb-md-0 fw-bold">
+							<h4 class="text-gray-800 fw-bolder">En iyi teklifi veren firma</h4>
+							<div class="fs-6 text-gray-600 pe-7"><span class="pe-4">@firma.CurrentAccount.CompanyName,</span><span class="pe-4">@firma.Amount.Value.ToString("n")</span></div>
+						</div>
+                        <a asp-action="OfferClose" asp-controller="Purchase" asp-route-id="@firma.Id" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-custom-class="tooltip-dark" data-bs-placement="left" title="Teklif Kapama"><i class="fas fa-check-double"></i> Teklif Kapat</a>
+					</div>
+				</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 d-flex align-items-center justify-content-start"></div>
+                <div class="col-sm-6 d-flex align-items-center justify-content-end">
+                     <div id="kt_datatable_offer_status_filter" class="dataTables_filter">
+                        <label>Ara:<input type="search" class="form-control form-control-sm form-control-solid" data-kt-offer-status-table-filter="search" placeholder="" aria-controls="kt_datatable_offer_status"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table id="kt_offer_status_table" class="table table-striped table-row-bordered gy-5 gs-7 border">
+                    <thead class="border-gray-200 fs-5 fw-bold bg-light-dark">
+                        <tr class="fw-bolder fs-6 text-gray-800 px-7">
+                            <th class="min-w-150px">Tedarikçi Firma</th>
+                            <th class="min-w-125px">Teklif Tarihi</th>
+                            <th class="min-w-125px">Teklif Tutarı</th>
+                            <th class="min-w-100px d-flex align-items-center justify-content-center">Teklif Kapatma</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.PurchaseTenders?.Count() > 0)
+                        {
+                            foreach (var tender in Model.PurchaseTenders)
+                            {
+                                <tr>
+                                    <td>@tender.CurrentAccount.CompanyName</td>
+                                    <td>@(tender.OfferTime != null ? tender.OfferTime.GetValueOrDefault().ToString("d") : "")</td>
+                                    <td>@tender.Amount.Value.ToString("n")</td>
+                                    <td class="d-flex align-items-center justify-content-center">
+                                        @if (tender.OfferTime != null && tender.Amount > 0)
+                                        {
+                                            <a asp-action="OfferClose" asp-controller="Purchase" asp-route-id="@tender.Id" class="btn btn-icon btn-sm btn-primary" data-bs-toggle="tooltip" data-bs-custom-class="tooltip-dark" data-bs-placement="left" title="Teklifi Kapat"><i class="fas fa-check-double"></i></a>
+                                        }
+                                        else { 
+                                            <span>Teklif vermedi</span> }
+                                    </td>
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section PageScripts {
+    <!--begin::Page Vendors Javascript(used by this page)-->
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Page Vendors Javascript-->
+    <!--begin::Page Custom Javascript(used by this page)-->
+    <script src="~/assets/js/custom/apps/purchase/load-datatable-offer-status.js"></script>
+}

@@ -1,0 +1,121 @@
+﻿@model ProductInOutDto
+@{
+    var inOut = (Model.Input_fl ? "Giriş" : "Çıkış");
+    ViewData["Title"] = $"Malzeme {inOut}";
+}
+@section Styles {
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+<div class="card">
+    <div class="card-header border-0 pt-10">
+        <h2 class="fw-bolder">
+            <span>Malzeme @inOut</span>
+        </h2>
+    </div>
+    <div class="card-body">
+        <form id="kt_product_in_out_form" method="post" asp-action="SaveProductInOut">
+            @if (Model.ProductInOut.Id > 0)
+            {
+                <input type="hidden" asp-for="ProductInOut.Id" />
+                <input type="hidden" asp-for="ProductInOut.TransactionDate" />
+                <input type="hidden" asp-for="ProductInOut.CreatedBy" />
+                <input type="hidden" asp-for="ProductInOut.CreatedDate" />
+            }
+            <input type="hidden" asp-for="Input_fl" />
+
+            <div class="row mb-7">
+                <div class="col-md-6 fv-row">
+                    <label class="fs-6 fw-bold mb-2">Malzeme</label>
+                    <select asp-for="ProductInOut.ProductId" asp-items="@Model.ProductList" class="form-select form-select-solid" data-control="select2">
+                        <option value="">--- Ürün Seçiniz ---</option>
+                    </select>
+                    <span class="text-danger" asp-validation-for="ProductInOut.ProductId"></span>
+                </div>
+                <div class="col-md-6 fv-row">
+                    <label class="fs-6 fw-bold mb-2">@inOut Miktarı</label>
+                    <input type="number" asp-for="ProductInOut.Quantity" class="form-control form-control-solid" />
+                    <span class="text-danger" asp-validation-for="ProductInOut.Quantity"></span>
+                </div>
+            </div>
+            <div class="row mb-7">
+                <div class="col-md-6 fv-row">
+                    <label class="fs-6 fw-bold mb-2">Marka</label>
+                    <input type="text" id="Brand" class="form-control form-control-solid" readonly />
+                </div>
+                <div class="col-md-6 fv-row">
+                    @if (Model.Input_fl)
+                    {
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                    }
+                    else
+                    {
+                        <label class="fs-6 fw-bold mb-2">Sevk Noktası</label>
+                        <input type="text" asp-for="ProductInOut.DispatchPoint" class="form-control form-control-solid" />
+                        <span class="text-danger" asp-validation-for="ProductInOut.DispatchPoint"></span>
+                    }
+                </div>
+            </div>
+            <div class="row mb-7 fv-row">
+                <div class="col-md-6">
+                    <label class="fs-6 fw-bold mb-2">Birim</label>
+                    <input type="text" id="Unit" class="form-control form-control-solid" readonly />
+                </div>
+                <div class="col-md-6 fv-row">
+                    @if (Model.Input_fl == false)
+                    {
+                        <label class="fs-6 fw-bold mb-2">Açıklama</label>
+                        <textarea asp-for="ProductInOut.Description" class="form-control form-control-solid" rows="3"></textarea>
+                        <span class="text-danger" asp-validation-for="ProductInOut.Description"></span>
+                    }
+                </div>
+            </div>
+            <div class="row mb-7 fv-row">
+                <div class="col-md-6">
+                    <label class="fs-6 fw-bold mb-2">Stoktaki Miktar</label>
+                    <input type="number" id="Quantity" class="form-control form-control-solid" readonly />
+                </div>
+                <div class="col-md-6">
+                    @if (Model.Input_fl == false)
+                    {
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                    }
+                </div>
+            </div>
+            <div class="row mb-7 fv-row">
+                <div class="col-md-6">
+                    <label class="fs-6 fw-bold mb-2">Ebat (En-Boy)</label>
+                    <input type="text" id="Dimensions" class="form-control form-control-solid" readonly />
+                </div>
+            </div>
+            <div class="row mb-7 fv-row">
+                <div class="col-md-6">
+                    <label class="fs-6 fw-bold mb-2">Kalınlık</label>
+                    <input type="text" id="Thickness" class="form-control form-control-solid" readonly />
+                </div>
+            </div>
+            <div class="row mb-7 fv-row">
+                <div class="col-md-6">
+                    <label class="fs-6 fw-bold mb-2">Tür/Cins</label>
+                    <input type="text" id="Species" class="form-control form-control-solid" readonly />
+                </div>
+            </div>
+            <div class="row mb-7 fv-row">
+                <div class="col-md-6">
+                    <label class="fs-6 fw-bold mb-2">İş Grubu</label>
+                    <input type="text" id="BusinessGroupId" class="form-control form-control-solid" readonly />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section PageScripts {
+    <!--begin::Page Custom Javascript(used by this page)-->
+    <script src="/assets/js/custom/apps/product/in-out.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+} 

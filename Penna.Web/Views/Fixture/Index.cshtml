@@ -1,0 +1,104 @@
+﻿@model FixtureDto
+@{
+    ViewData["Title"] = "Demirbaşlar";
+    var title = "Yeni Demirbaş Tanımla";
+}
+
+@section Styles {
+    <!--begin::Page Vendor Stylesheets(used by this page)-->
+    <link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Page Vendor Stylesheets-->
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+<div class="row">
+    <div class="col-md-4">
+
+        <div class="card border border-secondary">
+            <div class="card-body">
+                <form id="fixtureForm" method="post" asp-action="Create">
+                    @if (Model.Fixture.Id != 0)
+                    {
+                        title = $"{Model.Fixture.ProductName} Düzenle";
+                        <input type="hidden" asp-for="Fixture.Id" />
+                        <input type="hidden" asp-for="Fixture.ProjectId" />
+                        <input type="hidden" asp-for="Fixture.CreatedBy" />
+                        <input type="hidden" asp-for="Fixture.CreatedDate" />
+                    }
+                    <h5>@title</h5>
+                    <hr />
+                    <div class="row g-2 mb-5">
+                        <label for="ProductName">Ürün Adı</label>
+                        <input type="text" asp-for="Fixture.ProductName" class="form-control form-control-solid" required />
+                        <span asp-validation-for="Fixture.ProductName" class="text-danger"></span>
+                    </div>
+                    <div class="row g-2 mb-5">
+                        <label for="Description">Ürün Açıklaması</label>
+                        <textarea asp-for="Fixture.Description" class="form-control form-control-solid" rows="5"></textarea>
+                        <span asp-validation-for="Fixture.Description" class="text-danger"></span>
+                    </div>
+                    <div class="row g-2 mb-5">
+                        <label for="Quantity">Ürün Miktarı</label>
+                        <input type="number" asp-for="Fixture.Quantity" class="form-control form-control-solid" required />
+                        <span asp-validation-for="Fixture.Quantity" class="text-danger"></span>
+                    </div>
+                    <div class="row g-2 mb-5">
+                        <button type="submit" class="btn btn-primary w-100">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-8">
+        <div class="card border border-secondary">
+            <div class="card-body">
+                <h5>Kayıtlı Demirbaşlar</h5>
+                <hr />
+                <table id="fixtureTable" class="table table-stripped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ürün Adı</th>
+                            <th>Açıklama</th>
+                            <th>Miktar</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if(Model.Fixtures.Count > 0)
+                        {
+                            foreach (var fixture in Model.Fixtures)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(model => fixture.Id)</td>
+                                    <td>@Html.DisplayFor(model => fixture.ProductName)</td>
+                                    <td>@Html.DisplayFor(model => fixture.Description)</td>
+                                    <td>@Html.DisplayFor(model => fixture.Quantity)</td>
+                                    <td>
+                                        <a asp-action="Index" asp-route-id="@fixture.Id" class="btn btn-icon btn-sm btn-warning" title="düzenle"><i class="far fa-edit"></i></a>
+                                        <a asp-action="Delete" asp-route-id="@fixture.Id" class="btn btn-icon btn-sm btn-danger" title="sil"><i class="far fa-trash-alt"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section PageScripts {
+    <!--begin::Page Vendors Javascript(used by this page)-->
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Page Vendors Javascript-->
+    <!--begin::Page Custom Javascript(used by this page)-->
+    <script src="~/assets/js/custom/apps/block/team/list.js"></script>
+    <script src="~/assets/js/custom/apps/block/team/add.js"></script>
+    <partial name="_ValidationScriptsPartial">
+}

@@ -1,0 +1,461 @@
+﻿@model BlockDto
+
+@{
+    ViewData["Title"] = "Tüm Bloklar";
+}
+
+@section Styles {
+    <!--begin::Page Vendor Stylesheets(used by this page)-->
+    <link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Page Vendor Stylesheets-->
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+
+<!--begin::Card-->
+<div class="card">
+    <!--begin::Card header-->
+    <div class="card-header border-0 pt-6">
+        <!--begin::Card title-->
+        <div class="card-title">
+            <!--begin::Search-->
+            <div class="d-flex align-items-center position-relative my-1">
+                <!--begin::Svg Icon | path: icons/duotone/General/Search.svg-->
+                <span class="svg-icon svg-icon-1 position-absolute ms-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <rect x="0" y="0" width="24" height="24" />
+                            <path d="M14.2928932,16.7071068 C13.9023689,16.3165825 13.9023689,15.6834175 14.2928932,15.2928932 C14.6834175,14.9023689 15.3165825,14.9023689 15.7071068,15.2928932 L19.7071068,19.2928932 C20.0976311,19.6834175 20.0976311,20.3165825 19.7071068,20.7071068 C19.3165825,21.0976311 18.6834175,21.0976311 18.2928932,20.7071068 L14.2928932,16.7071068 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
+                            <path d="M11,16 C13.7614237,16 16,13.7614237 16,11 C16,8.23857625 13.7614237,6 11,6 C8.23857625,6 6,8.23857625 6,11 C6,13.7614237 8.23857625,16 11,16 Z M11,18 C7.13400675,18 4,14.8659932 4,11 C4,7.13400675 7.13400675,4 11,4 C14.8659932,4 18,7.13400675 18,11 C18,14.8659932 14.8659932,18 11,18 Z" fill="#000000" fill-rule="nonzero" />
+                        </g>
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->
+                <input type="text" data-kt-blocks-table-filter="search" class="form-control form-control-solid w-250px ps-15" placeholder="Blok Ara" />
+            </div>
+            <!--end::Search-->
+        </div>
+        <!--begin::Card title-->
+        <!--begin::Card toolbar-->
+        <div class="card-toolbar">
+            <!--begin::Toolbar-->
+            <div class="d-flex justify-content-end" data-kt-blocks-table-toolbar="base">
+                <!--begin::Add country-->
+                <button type="button" class="btn btn-primary" data-kt-blocks-table-filter="add_row" data-bs-toggle="modal" data-bs-target="#kt_modal_add_blocks">
+                    <!--begin::Svg Icon | path: icons/duotone/Navigation/Plus.svg-->
+                    <span class="svg-icon svg-icon-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                            <rect fill="#000000" x="4" y="11" width="16" height="2" rx="1" />
+                            <rect fill="#000000" opacity="0.5" transform="translate(12.000000, 12.000000) rotate(-270.000000) translate(-12.000000, -12.000000)" x="4" y="11" width="16" height="2" rx="1" />
+                        </svg>
+                    </span>
+                    <!--end::Svg Icon-->
+                    Yeni Blok 
+                </button>
+                <!--end::Add country-->
+            </div>
+            <!--end::Toolbar-->
+        </div>
+        <!--end::Card toolbar-->
+    </div>
+    <!--end::Card header-->
+    <!--begin::Card body-->
+    <div class="card-body pt-0">
+        <!--begin::Table-->
+        <table class="table align-middle table-row-dashed table-striped table-sm fs-6 gy-1 w-100" id="kt_blocks_table">
+            <!--begin::Table head-->
+            <thead>
+                <!--begin::Table row-->
+                <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
+                    <th class="min-w-125px">Blok Adı</th>
+                    <th class="min-w-125px">Kat Sayısı</th>
+                    <th class="min-w-125px">Bodrum Kat Sayısı</th>
+                    <th class="min-w-125px">Bölüm Sayısı</th>
+                    <th class="min-w-125px">Tür</th>
+                    <th class="text-end min-w-70px" style="padding-right:20px">İşlemler</th>
+                </tr>
+                <!--end::Table row-->
+            </thead>
+            <!--end::Table head-->
+            <!--begin::Table body-->
+            <tbody class="fw-bold text-gray-600"></tbody>
+            <!--end::Table body-->
+        </table>
+        <!--end::Table-->
+    </div>
+    <!--end::Card body-->
+</div>
+<!--end::Card-->
+<!--begin::Modal - Block - Add-->
+<div class="modal fade" id="kt_modal_add_blocks" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered mw-750px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Form-->
+            <form class="form" action="#" method="post" id="kt_modal_add_blocks_form" data-kt-redirect="/Block">
+                <!--begin::Modal header-->
+                <div class="modal-header" id="kt_modal_add_blocks_header">
+                    <!--begin::Modal title-->
+                    <h2 class="fw-bolder">Yeni Blok Ekleme</h2>
+                    <!--end::Modal title-->
+                    <!--begin::Close-->
+                    <div id="kt_modal_add_blocks_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                        <!--begin::Svg Icon | path: icons/duotone/Navigation/Close.svg-->
+                        <span class="svg-icon svg-icon-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                <g transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) translate(4.000000, 4.000000)" fill="#000000">
+                                    <rect fill="#000000" x="0" y="7" width="16" height="2" rx="1" />
+                                    <rect fill="#000000" opacity="0.5" transform="translate(8.000000, 8.000000) rotate(-270.000000) translate(-8.000000, -8.000000)" x="0" y="7" width="16" height="2" rx="1" />
+                                </g>
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </div>
+                    <!--end::Close-->
+                </div>
+                <!--end::Modal header-->
+                <!--begin::Modal body-->
+                <div class="modal-body py-10 px-lg-17">
+                    <!--begin::Scroll-->
+                    <div class="scroll-y me-n7 pe-7" id="kt_modal_add_blocks_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_blocks_header" data-kt-scroll-wrappers="#kt_modal_add_blocks_scroll" data-kt-scroll-offset="300px">
+                        <!--begin::Input group Name & TypeId-->
+                        <div class="row mb-7">
+                            <!--begin::Input group Name-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Blok Adı</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" name="Name" class="form-control form-control-solid" placeholder="Blok adı giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group Name-->
+                            <!--begin::Input group TypeId-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Türü</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <select name="TypeId" asp-items="@Html.GetEnumSelectList<BlockTypeEnum>()" class="form-select form-select-solid fw-bolder" aria-label="Blok türü Seç." data-dropdown-parent="#kt_modal_add_blocks" data-placeholder="- Lütfen blok türü seçiniz">
+                                    <option value="">Blok türü seç...</option>
+                                </select>
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group TypeId-->
+                        </div>
+                        <!--end::Input group BlockName & TypeId-->
+                        <!--begin::Input group FloorCount & BasementCount-->
+                        <div class="row g-9 mb-7">
+                            <!--begin::Col FloorCount-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                    <span class="required">Kat Sayısı</span>
+                                    <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Zemin + Kat Sayısı"></i>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" name="FloorCount" class="form-control form-control-solid" placeholder="Kat sayısı giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col FloorCount-->
+                            <!--begin::Col BasementCount-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                    <span class="required">Bodrum Kat Sayısı</span>
+                                    <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Bodrum Katlarının Sayısını giriniz"></i>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" name="BasementCount" class="form-control form-control-solid" placeholder="Bodrum kat sayısı giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col BasementCount-->
+                        </div>
+                        <!--end::Input group FloorCount & BasementCount-->
+                        <!--begin::Input ApartmentCount-->
+                        <div class="row g-9 mb-7">
+                            <!--begin::Col ApartmentCount-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Kat Başına Bağımsız Bölüm Sayısı</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" name="ApartmentCount" class="form-control form-control-solid" placeholder="Her katta bulunan bölüm sayısı giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col ApartmentCount-->
+                        </div>
+                        <!--end::Input ApartmentCount-->
+
+                        <div class="pt-10 pb-lg-5 ">
+                            <!--begin::Title-->
+                            <h2 class="fw-bolder text-dark underline underline-gray">Maliyet Hesaplama Tablosu</h2>
+                            <!--end::Title-->
+                        </div>
+                        <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
+                            <!--begin::Wrapper-->
+                            <div class="d-flex flex-stack flex-grow-1">
+                                <!--begin::Content-->
+                                <!--begin::Input group BlockCostCalculation & FloorCalculation & BasementCount-->
+                                <!--begin::Col BlockCostCalculation-->
+                                <div class="fv-row">
+                                    <!--begin::Label-->
+                                    <label class="fs-6 fw-bold mb-2">
+                                        <span class="required">Blok</span>
+                                        <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Blok Hesaplama"></i>
+                                    </label>
+                                    <!--end::Label-->
+                                    <!--begin::Input-->
+                                    <select asp-items="@Html.GetEnumSelectList<CostCalculationEnum>()" name="BlockCostCalculation" class="form-select form-select-solid"></select>
+                                    <!--end::Input-->
+                                </div>
+                                <!--end::Col BlockCostCalculation-->
+                                <!--begin::Col FloorCalculation-->
+                                <div class="fv-row">
+                                    <!--begin::Label-->
+                                    <label class="required fs-6 fw-bold mb-2">Daire</label>
+                                    <!--end::Label-->
+                                    <!--begin::Input-->
+                                    <select asp-items="@Html.GetEnumSelectList<CostCalculationEnum>()" name="ApartmentCostCalculation" class="form-select form-select-solid"></select>
+                                    <!--end::Input-->
+                                </div>
+                                <!--end::Col ApartmentCostCalculation-->
+                                <!--begin::Col PublicAreaCostCalculation-->
+                                <div class="fv-row">
+                                    <!--begin::Label-->
+                                    <label class="required fs-6 fw-bold mb-2">Ortak Alan</label>
+                                    <!--end::Label-->
+                                    <!--begin::Input-->
+                                    <select asp-items="@Html.GetEnumSelectList<CostCalculationEnum>()" name="PublicAreaCostCalculation" class="form-select form-select-solid"></select>
+                                    <!--end::Input-->
+                                </div>
+                                <!--end::Col PublicAreaCostCalculation-->
+                                <!--end::Input group BlockCostCalculation & ApartmentCostCalculation & PublicAreaCostCalculation-->
+                                <!--end::Content-->
+                            </div>
+                            <!--end::Wrapper-->
+                        </div>
+                    </div>
+                    <!--end::Scroll-->
+                </div>
+                <!--end::Modal body-->
+                <!--begin::Modal footer-->
+                <div class="modal-footer flex-center">
+                    <!--begin::Button-->
+                    <button type="reset" id="kt_modal_add_blocks_cancel" class="btn btn-white me-3">Vazgeç</button>
+                    <!--end::Button-->
+                    <!--begin::Button-->
+                    <button type="submit" id="kt_modal_add_blocks_submit" class="btn btn-primary">
+                        <span class="indicator-label">Kaydet</span>
+                        <span class="indicator-progress">
+                            Lütfen bekleyin...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
+                    <!--end::Button-->
+                </div>
+                <!--end::Modal footer-->
+            </form>
+            <!--end::Form-->
+        </div>
+    </div>
+</div>
+<!--end::Modal - Block - Add-->
+<!--begin::Modal - Block - Edit-->
+<div class="modal fade" id="kt_modal_edit_blocks" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered mw-650px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Form-->
+            <form class="form" action="#" method="post" id="kt_modal_edit_blocks_form" data-kt-redirect="/Block">
+                <input type="hidden" name="Id" />
+                <input type="hidden" name="ProjectId" />
+                <input type="hidden" name="CreatedBy" />
+                <input type="hidden" name="CreatedDate" />
+                <!--begin::Modal header-->
+                <div class="modal-header" id="kt_modal_edt_blocks_header">
+                    <!--begin::Modal title-->
+                    <h2 class="fw-bolder">Blok Bilgilerini Düzenle</h2>
+                    <!--end::Modal title-->
+                    <!--begin::Close-->
+                    <div id="kt_modal_edit_blocks_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                        <!--begin::Svg Icon | path: icons/duotone/Navigation/Close.svg-->
+                        <span class="svg-icon svg-icon-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                <g transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) translate(4.000000, 4.000000)" fill="#000000">
+                                    <rect fill="#000000" x="0" y="7" width="16" height="2" rx="1" />
+                                    <rect fill="#000000" opacity="0.5" transform="translate(8.000000, 8.000000) rotate(-270.000000) translate(-8.000000, -8.000000)" x="0" y="7" width="16" height="2" rx="1" />
+                                </g>
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </div>
+                    <!--end::Close-->
+                </div>
+                <!--end::Modal header-->
+                <!--begin::Modal body-->
+                <div class="modal-body py-10 px-lg-17">
+                    <!--begin::Scroll-->
+                    <div class="scroll-y me-n7 pe-7" id="kt_modal_add_blocks_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_blocks_header" data-kt-scroll-wrappers="#kt_modal_add_blocks_scroll" data-kt-scroll-offset="300px">
+                        <!--begin::Input group Name & TypeId-->
+                        <div class="row mb-7">
+                            <!--begin::Input group Name-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Blok Adı</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" name="Name" class="form-control form-control-solid" placeholder="Blok adı giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group Name-->
+                            <!--begin::Input group TypeId-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Türü</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <select name="TypeId" asp-items="@Html.GetEnumSelectList<BlockTypeEnum>()" class="form-select form-select-solid fw-bolder" aria-label="Blok türü Seç." data-dropdown-parent="#kt_modal_edit_blocks" data-placeholder="- Lütfen blok türü seçiniz -">
+                                    <option value="">Blok türü seç...</option>
+                                </select>
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group TypeId-->
+                        </div>
+                        <!--end::Input group BlockName & TypeId-->
+                        <!--begin::Input group FloorCount & BasementCount-->
+                        <div class="row g-9 mb-7">
+                            <!--begin::Col FloorCount-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                    <span class="required">Kat Sayısı</span>
+                                    <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Zemin + Kat Sayısı"></i>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" name="FloorCount" class="form-control form-control-solid" placeholder="Kat sayısı giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col FloorCount-->
+                            <!--begin::Col BasementCount-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                    <span class="required">Bodrum Kat Sayısı</span>
+                                    <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Bodrum Katlarının Sayısını giriniz"></i>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" name="BasementCount" class="form-control form-control-solid" placeholder="Bodrum kat sayısı giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col BasementCount-->
+                        </div>
+                        <!--end::Input group FloorCount & BasementCount-->
+                        <!--begin::Input ApartmentCount-->
+                        <div class="row g-9 mb-7">
+                            <!--begin::Col ApartmentCount-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Kat Başına Bağımsız Bölüm Sayısı</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" name="ApartmentCount" class="form-control form-control-solid" placeholder="Her katta bulunan bölüm sayısı giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col ApartmentCount-->
+                        </div>
+                        <!--end::Input ApartmentCount-->
+
+                        <div class="pt-10 pb-lg-5 ">
+                            <!--begin::Title-->
+                            <h2 class="fw-bolder text-dark underline underline-gray">Maliyet Hesaplama Tablosu</h2>
+                            <!--end::Title-->
+                        </div>
+                        <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
+                            <!--begin::Wrapper-->
+                            <div class="d-flex flex-stack flex-grow-1">
+                                <!--begin::Content-->
+                                <!--begin::Input group BlockCostCalculation & FloorCalculation & BasementCount-->
+                                <!--begin::Col BlockCostCalculation-->
+                                <div class="fv-row">
+                                    <!--begin::Label-->
+                                    <label class="fs-6 fw-bold mb-2">
+                                        <span class="required">Blok</span>
+                                        <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Blok Hesaplama"></i>
+                                    </label>
+                                    <!--end::Label-->
+                                    <!--begin::Input-->
+                                    <select asp-items="@Html.GetEnumSelectList<CostCalculationEnum>()" name="BlockCostCalculation" class="form-select form-select-solid"></select>
+                                    <!--end::Input-->
+                                </div>
+                                <!--end::Col BlockCostCalculation-->
+                                <!--begin::Col FloorCalculation-->
+                                <div class="fv-row">
+                                    <!--begin::Label-->
+                                    <label class="required fs-6 fw-bold mb-2">Daire</label>
+                                    <!--end::Label-->
+                                    <!--begin::Input-->
+                                    <select asp-items="@Html.GetEnumSelectList<CostCalculationEnum>()" name="ApartmentCostCalculation" class="form-select form-select-solid"></select>
+                                    <!--end::Input-->
+                                </div>
+                                <!--end::Col ApartmentCostCalculation-->
+                                <!--begin::Col PublicAreaCostCalculation-->
+                                <div class="fv-row">
+                                    <!--begin::Label-->
+                                    <label class="required fs-6 fw-bold mb-2">Ortak Alan</label>
+                                    <!--end::Label-->
+                                    <!--begin::Input-->
+                                    <select asp-items="@Html.GetEnumSelectList<CostCalculationEnum>()" name="PublicAreaCostCalculation" class="form-select form-select-solid"></select>
+                                    <!--end::Input-->
+                                </div>
+                                <!--end::Col PublicAreaCostCalculation-->
+                                <!--end::Input group BlockCostCalculation & ApartmentCostCalculation & PublicAreaCostCalculation-->
+                                <!--end::Content-->
+                            </div>
+                            <!--end::Wrapper-->
+                        </div>
+                    </div>
+                    <!--end::Scroll-->
+                </div>
+                <!--end::Modal body-->
+                <!--begin::Modal footer-->
+                <div class="modal-footer flex-center">
+                    <!--begin::Button-->
+                    <button type="reset" id="kt_modal_edit_blocks_cancel" class="btn btn-white me-3" data-bs-dismiss="modal">Vazgeç</button>
+                    <!--end::Button-->
+                    <!--begin::Button-->
+                    <button type="submit" id="kt_modal_edit_blocks_submit" class="btn btn-primary">
+                        <span class="indicator-label">Kaydet</span>
+                        <span class="indicator-progress">
+                            Lütfen bekleyin...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
+                    <!--end::Button-->
+                </div>
+                <!--end::Modal footer-->
+            </form>
+            <!--end::Form-->
+        </div>
+    </div>
+</div>
+<!--end::Modal - Block - Edit-->
+
+@section PageScripts {
+    <!--begin::Page Vendors Javascript(used by this page)-->
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Page Vendors Javascript-->
+    <!--begin::Page Custom Javascript(used by this page)-->
+    <script src="~/assets/js/custom/apps/block/list.js"></script>
+    <script src="~/assets/js/custom/apps/block/add.js"></script>
+    <script src="~/assets/js/custom/apps/block/edit.js"></script>
+}

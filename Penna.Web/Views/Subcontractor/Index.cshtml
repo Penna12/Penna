@@ -1,0 +1,613 @@
+﻿@model CurrentAccountDto
+
+@section Styles {
+    <!--begin::Page Vendor Stylesheets(used by this page)-->
+    <link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Page Vendor Stylesheets-->
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+
+<!--begin::Card-->
+<div class="card">
+    <!--begin::Card header-->
+    <div class="card-header border-0 pt-6">
+        <!--begin::Card title-->
+        <div class="card-title">
+            <!--begin::Search-->
+            <div class="d-flex align-items-center position-relative my-1">
+                <!--begin::Svg Icon | path: icons/duotone/General/Search.svg-->
+                <span class="svg-icon svg-icon-1 position-absolute ms-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <rect x="0" y="0" width="24" height="24" />
+                            <path d="M14.2928932,16.7071068 C13.9023689,16.3165825 13.9023689,15.6834175 14.2928932,15.2928932 C14.6834175,14.9023689 15.3165825,14.9023689 15.7071068,15.2928932 L19.7071068,19.2928932 C20.0976311,19.6834175 20.0976311,20.3165825 19.7071068,20.7071068 C19.3165825,21.0976311 18.6834175,21.0976311 18.2928932,20.7071068 L14.2928932,16.7071068 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
+                            <path d="M11,16 C13.7614237,16 16,13.7614237 16,11 C16,8.23857625 13.7614237,6 11,6 C8.23857625,6 6,8.23857625 6,11 C6,13.7614237 8.23857625,16 11,16 Z M11,18 C7.13400675,18 4,14.8659932 4,11 C4,7.13400675 7.13400675,4 11,4 C14.8659932,4 18,7.13400675 18,11 C18,14.8659932 14.8659932,18 11,18 Z" fill="#000000" fill-rule="nonzero" />
+                        </g>
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->
+                <input type="text" data-kt-subcontractors-table-filter="search" class="form-control form-control-solid w-250px ps-15" placeholder="Taşeron Ara" />
+            </div>
+            <!--end::Search-->
+        </div>
+        <!--begin::Card title-->
+        <!--begin::Card toolbar-->
+        <div class="card-toolbar">
+            <!--begin::Toolbar-->
+            <div class="d-flex justify-content-end" data-kt-subcontractors-table-toolbar="base">
+                <!--begin::Add country-->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_subcontractors">
+                    <!--begin::Svg Icon | path: icons/duotone/Navigation/Plus.svg-->
+                    <span class="svg-icon svg-icon-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                            <rect fill="#000000" x="4" y="11" width="16" height="2" rx="1" />
+                            <rect fill="#000000" opacity="0.5" transform="translate(12.000000, 12.000000) rotate(-270.000000) translate(-12.000000, -12.000000)" x="4" y="11" width="16" height="2" rx="1" />
+                        </svg>
+                    </span>
+                    <!--end::Svg Icon-->
+                    Yeni Taşeron
+                </button>
+                <!--end::Add country-->
+            </div>
+            <!--end::Toolbar-->
+        </div>
+        <!--end::Card toolbar-->
+    </div>
+    <!--end::Card header-->
+    <!--begin::Card body-->
+    <div class="card-body pt-0">
+        <!--begin::Table-->
+        <table class="table align-middle table-row-dashed table-striped table-sm fs-6 gy-1 w-100" id="kt_subcontractors_table">
+            <!--begin::Table head-->
+            <thead>
+                <!--begin::Table row-->
+                <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
+                    <th class="min-w-125px">Firma Adı</th>
+                    <th class="min-w-125px">Yetkili Adı</th>
+                    <th class="min-w-125px">İş Grubu</th>
+                    <th class="min-w-125px">Telefon</th>
+                    <th class="min-w-125px">Eposta</th>
+                    <th class="min-w-125px">Durumu</th>
+                    <th class="text-end min-w-70px" style="padding-right:20px">İşlemler</th>
+                </tr>
+                <!--end::Table row-->
+            </thead>
+            <!--end::Table head-->
+            <!--begin::Table body-->
+            <tbody class="fw-bold text-gray-600"></tbody>
+            <!--end::Table body-->
+        </table>
+        <!--end::Table-->
+    </div>
+    <!--end::Card body-->
+</div>
+<!--end::Card-->
+<!--begin::Modal - Subcontractor - Add-->
+<div class="modal fade" id="kt_modal_add_subcontractors" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered mw-750px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Form-->
+            <form class="form" action="#" method="post" id="kt_modal_add_subcontractors_form" data-kt-redirect="/Subcontractor">
+                <!--begin::Modal header-->
+                <div class="modal-header" id="kt_modal_add_subcontractors_header">
+                    <!--begin::Modal title-->
+                    <h2 class="fw-bolder">Yeni Taşeron Ekleme</h2>
+                    <!--end::Modal title-->
+                    <!--begin::Close-->
+                    <div id="kt_modal_add_subcontractors_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                        <!--begin::Svg Icon | path: icons/duotone/Navigation/Close.svg-->
+                        <span class="svg-icon svg-icon-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                <g transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) translate(4.000000, 4.000000)" fill="#000000">
+                                    <rect fill="#000000" x="0" y="7" width="16" height="2" rx="1" />
+                                    <rect fill="#000000" opacity="0.5" transform="translate(8.000000, 8.000000) rotate(-270.000000) translate(-8.000000, -8.000000)" x="0" y="7" width="16" height="2" rx="1" />
+                                </g>
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </div>
+                    <!--end::Close-->
+                </div>
+                <!--end::Modal header-->
+                <!--begin::Modal body-->
+                <div class="modal-body py-10 px-lg-17">
+                    <!--begin::Scroll-->
+                    <div class="scroll-y me-n7 pe-7" id="kt_modal_add_subcontractors_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_subcontractors_header" data-kt-scroll-wrappers="#kt_modal_add_subcontractors_scroll" data-kt-scroll-offset="300px">
+                        <!--begin::Input group CompanyName & AuthorizedPerson-->
+                        <div class="row mb-7">
+                            <!--begin::Input group CompanyName-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Taşeron Firma Adı</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.CompanyName" class="form-control form-control-solid" placeholder="Taşeron firma adı giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group CompanyName-->
+                            <!--begin::Input group AuthorizedPerson-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Yetkili Kişi</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.AuthorizedPerson" class="form-control form-control-solid" placeholder="Yetkili kişiyi giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group AuthorizedPerson-->
+                        </div>
+                        <!--end::Input group CompanyName & AuthorizedPerson-->
+                        <!--begin::Input group Address-->
+                        <div class="row mb-7">
+                            <div class="col-md-12 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Adres</label>
+                                <!--end::Label-->
+                                <!--begin::Input Address-->
+                                <textarea asp-for="CurrentAccount.Address" class="form-control form-control-solid" placeholder="Adres giriniz"></textarea>
+                                <!--end::Input Address-->
+                            </div>
+                        </div>
+                        <!--end::Input group Address-->
+                        <!--begin::Input group City & Country-->
+                        <div class="row g-9 mb-7">
+                            <!--begin::Col Country-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                    <span class="required">Ülke</span>
+                                    <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Ülke"></i>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Input country-->
+                                <select asp-for="CurrentAccount.CountryId" asp-items="Model.CountryList" class="form-select form-select-solid fw-bolder" aria-label="Ülke Seç." data-control="select2" data-dropdown-parent="#kt_modal_add_subcontractors" data-placeholder="- Lütfen bir ülke seçiniz">
+                                    <option value="">Ülke seç...</option>
+                                </select>
+                                <!--end::Input country-->
+                            </div>
+                            <!--end::Col Country-->
+                            <!--begin::Col City-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Şehir</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <select asp-for="CurrentAccount.CityId" asp-items="Model.CityList" class="form-select form-select-solid fw-bolder" aria-label="Şehir Seç." data-control="select2" data-dropdown-parent="#kt_modal_add_subcontractors" data-placeholder="- Lütfen bir şehir seçiniz">
+                                    <option value="">Şehir seç...</option>
+                                </select>
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col City-->
+                        </div>
+                        <!--end::Input group CityId & CountryId-->
+                        <!--begin::Input group TownId & BusinessGroupId-->
+                        <div class="row g-9 mb-7">
+                            <!--begin::Col TownId-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                    <span class="required">İlçe</span>
+                                    <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="İlçe"></i>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <select asp-for="CurrentAccount.TownId" asp-items="Model.TownList" class="form-select form-select-solid fw-bolder" aria-label="İlçe Seç." data-control="select2" data-dropdown-parent="#kt_modal_add_subcontractors" data-placeholder="- Lütfen bir ilçe seçiniz">
+                                    <option value="">İlçe seç...</option>
+                                </select>
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col TownId-->
+                            <!--begin::Col BusinessGroupId-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">İş Grubu</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <select asp-for="CurrentAccount.BusinessGroupId" asp-items="@Html.GetEnumSelectList<BusinessGroupEnum>()" class="form-select form-select-solid fw-bolder" aria-label="İş grubu Seç." data-control="select2" data-dropdown-parent="#kt_modal_add_subcontractors" data-placeholder="- Lütfen iş grubu seçiniz">
+                                    <option value="">İş grubu seç...</option>
+                                </select>
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col BusinessGroupId-->
+                        </div>
+                        <!--end::Input group TownId & BusinessGroupId-->
+                        <!--begin::Input group TaxId & TaxOffice-->
+                        <div class="row g-9 mb-7">
+                            <!--begin::Col TaxId-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Vergi No</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.TaxId" class="form-control form-control-solid" placeholder="Vergi no giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col TaxId-->
+                            <!--begin::Col TaxOffice-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Vergi Dairesi</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.TaxOffice" class="form-control form-control-solid" placeholder="Vergi dairesi giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col TaxOffice-->
+                        </div>
+                        <!--end::Input group TaxId & TaxOffice-->
+                        <!--begin::Input group Phone1 & Phone2-->
+                        <div class="row g-9 mb-7">
+                            <!--begin::Input group Phone1-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Telefon-1</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.Phone1" class="form-control form-control-solid" placeholder="Telefon no giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group Phone1-->
+                            <!--begin::Input group Phone2-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">Telefon-2</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.Phone2" class="form-control form-control-solid" placeholder="Telefon no giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group Phone2-->
+                        </div>
+                        <!--end::Input group Phone1 & Phone2-->
+                        <!--begin::Input group Email & CompanyStatusId-->
+                        <div class="row mb-7">
+                            <!--begin::Input group Email-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Eposta</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.Email" class="form-control form-control-solid" placeholder="Eposta giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group Email-->
+                            <!--begin::Col CompanyStatusId-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Firma Statüsü</label>
+                                <!--end::Label-->
+                                <!--begin::input-->
+                                <select asp-for="CurrentAccount.CompanyStatusId" asp-items="Html.GetEnumSelectList<CompanyStatusEnum>()" class="form-select form-select-solid fw-bolder" aria-label="Firma Statüsünü Seç." data-control="select2" data-dropdown-parent="#kt_modal_add_subcontractors" data-placeholder="- Lütfen firma statü seçiniz">
+                                    <option value="">Firma statüsünü seç...</option>
+                                </select>
+                                <!--end::input-->
+                            </div>
+                            <!--end::Input group CompanyStatusId-->
+                        </div>
+                        <!--end::Input group Email & CompanyStatusId-->
+                        <!--begin::Input group BankId IBAN_Code & IBAN-->
+                        <div class="row mb-7">
+                            <!--begin::Input group BankId-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">Banka</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.BankName" class="form-control form-control-solid" placeholder="Banka adı girin" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group BankId-->
+                            <!--begin::Input group IBAN-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">IBAN</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.IBAN" class="form-control form-control-solid" placeholder="IBAN giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group IBAN-->
+                        </div>
+                        <!--end::Input group BankId & IBAN_Code & IBAN-->
+                    </div>
+                    <!--end::Scroll-->
+                </div>
+                <!--end::Modal body-->
+                <!--begin::Modal footer-->
+                <div class="modal-footer flex-center">
+                    <!--begin::Button-->
+                    <button type="reset" id="kt_modal_add_subcontractors_cancel" class="btn btn-white me-3">Vazgeç</button>
+                    <!--end::Button-->
+                    <!--begin::Button-->
+                    <button type="submit" id="kt_modal_add_subcontractors_submit" class="btn btn-primary">
+                        <span class="indicator-label">Kaydet</span>
+                        <span class="indicator-progress">
+                            Lütfen bekleyin...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
+                    <!--end::Button-->
+                </div>
+                <!--end::Modal footer-->
+            </form>
+            <!--end::Form-->
+        </div>
+    </div>
+</div>
+<!--end::Modal - Subcontractor - Add-->
+<!--begin::Modal - Subcontractor - Edit-->
+<div class="modal fade" id="kt_modal_edit_subcontractors" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered mw-650px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Form-->
+            <form class="form" action="#" method="post" id="kt_modal_edit_subcontractors_form" data-kt-redirect="/Subcontractor">
+                <input type="hidden" asp-for="CurrentAccount.Id" />
+                <input type="hidden" asp-for="CurrentAccount.TenantId" />
+                <input type="hidden" asp-for="CurrentAccount.AccountTypeId" />
+                <input type="hidden" asp-for="CurrentAccount.CreatedBy" />
+                <input type="hidden" asp-for="CurrentAccount.CreatedDate" />
+                <!--begin::Modal header-->
+                <div class="modal-header" id="kt_modal_edt_subcontractors_header">
+                    <!--begin::Modal title-->
+                    <h2 class="fw-bolder">Taşeron Bilgilerini Düzenle</h2>
+                    <!--end::Modal title-->
+                    <!--begin::Close-->
+                    <div id="kt_modal_edit_subcontractors_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                        <!--begin::Svg Icon | path: icons/duotone/Navigation/Close.svg-->
+                        <span class="svg-icon svg-icon-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                <g transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) translate(4.000000, 4.000000)" fill="#000000">
+                                    <rect fill="#000000" x="0" y="7" width="16" height="2" rx="1" />
+                                    <rect fill="#000000" opacity="0.5" transform="translate(8.000000, 8.000000) rotate(-270.000000) translate(-8.000000, -8.000000)" x="0" y="7" width="16" height="2" rx="1" />
+                                </g>
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </div>
+                    <!--end::Close-->
+                </div>
+                <!--end::Modal header-->
+                <!--begin::Modal body-->
+                <div class="modal-body py-10 px-lg-17">
+                    <!--begin::Scroll-->
+                    <div class="scroll-y me-n7 pe-7" id="kt_modal_edit_subcontractors_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_edit_subcontractors_header" data-kt-scroll-wrappers="#kt_modal_edit_subcontractors_scroll" data-kt-scroll-offset="300px">
+                        <!--begin::Input group CompanyName & AuthorizedPerson-->
+                        <div class="row mb-7">
+                            <!--begin::Input group CompanyName-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Taşeron Firma Adı</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.CompanyName" class="form-control form-control-solid" placeholder="Taşeron firma adı giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group CompanyName-->
+                            <!--begin::Input group AuthorizedPerson-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Yetkili Kişi</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.AuthorizedPerson" class="form-control form-control-solid" placeholder="Yetkili kişiyi giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group AuthorizedPerson-->
+                        </div>
+                        <!--end::Input group CompanyName & AuthorizedPerson-->
+                        <!--begin::Input group Address-->
+                        <div class="row mb-7">
+                            <div class="col-md-12 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Adres</label>
+                                <!--end::Label-->
+                                <!--begin::Input Address-->
+                                <textarea asp-for="CurrentAccount.Address" class="form-control form-control-solid" placeholder="Adres giriniz"></textarea>
+                                <!--end::Input Address-->
+                            </div>
+                        </div>
+                        <!--end::Input group Address-->
+                        <!--begin::Input group City & Country-->
+                        <div class="row g-9 mb-7">
+                            <!--begin::Col Country-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                    <span class="required">Ülke</span>
+                                    <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Ülke"></i>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Input country-->
+                                <select asp-for="CurrentAccount.CountryId" asp-items="Model.CountryList" class="form-select form-select-solid fw-bolder" aria-label="Ülke Seç." data-control="select2" data-dropdown-parent="#kt_modal_edit_subcontractors" data-placeholder="- Lütfen bir ülke seçiniz">
+                                    <option value="">Ülke seç...</option>
+                                </select>
+                                <!--end::Input country-->
+                            </div>
+                            <!--end::Col Country-->
+                            <!--begin::Col City-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Şehir</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <select asp-for="CurrentAccount.CityId" asp-items="Model.CityList" class="form-select form-select-solid fw-bolder" aria-label="Şehir Seç." data-control="select2" data-dropdown-parent="#kt_modal_edit_subcontractors" data-placeholder="- Lütfen bir şehir seçiniz">
+                                    <option value="">Şehir seç...</option>
+                                </select>
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col City-->
+                        </div>
+                        <!--end::Input group CityId & CountryId-->
+                        <!--begin::Input group TownId & BusinessGroupId-->
+                        <div class="row g-9 mb-7">
+                            <!--begin::Col TownId-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                    <span class="required">İlçe</span>
+                                    <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="İlçe"></i>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <select asp-for="CurrentAccount.TownId" asp-items="Model.TownList" class="form-select form-select-solid fw-bolder" aria-label="İlçe Seç." data-control="select2" data-dropdown-parent="#kt_modal_edit_subcontractors" data-placeholder="- Lütfen bir ilçe seçiniz">
+                                    <option value="">İlçe seç...</option>
+                                </select>
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col TownId-->
+                            <!--begin::Col BusinessGroupId-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">İş Grubu</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <select asp-for="CurrentAccount.BusinessGroupId" asp-items="@Html.GetEnumSelectList<BusinessGroupEnum>()" class="form-select form-select-solid fw-bolder" aria-label="İş grubu Seç." data-control="select2" data-dropdown-parent="#kt_modal_edit_subcontractors" data-placeholder="- Lütfen iş grubu seçiniz">
+                                    <option value="">İş grubu seç...</option>
+                                </select>
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col BusinessGroupId-->
+                        </div>
+                        <!--end::Input group TownId & BusinessGroupId-->
+                        <!--begin::Input group TaxId & TaxOffice-->
+                        <div class="row g-9 mb-7">
+                            <!--begin::Col TaxId-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Vergi No</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.TaxId" class="form-control form-control-solid" placeholder="Vergi no giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col TaxId-->
+                            <!--begin::Col TaxOffice-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Vergi Dairesi</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.TaxOffice" class="form-control form-control-solid" placeholder="Vergi dairesi giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Col TaxOffice-->
+                        </div>
+                        <!--end::Input group TaxId & TaxOffice-->
+                        <!--begin::Input group Phone1 & Phone2-->
+                        <div class="row g-9 mb-7">
+                            <!--begin::Input group Phone1-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Telefon-1</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.Phone1" class="form-control form-control-solid" placeholder="Telefon no giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group Phone1-->
+                            <!--begin::Input group Phone2-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">Telefon-2</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.Phone2" class="form-control form-control-solid" placeholder="Telefon no giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group Phone2-->
+                        </div>
+                        <!--end::Input group Phone1 & Phone2-->
+                        <!--begin::Input group Email & CompanyStatusId-->
+                        <div class="row mb-7">
+                            <!--begin::Input group Email-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Eposta</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.Email" class="form-control form-control-solid" placeholder="Eposta giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group Email-->
+                            <!--begin::Col CompanyStatusId-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">Firma Statüsü</label>
+                                <!--end::Label-->
+                                <!--begin::input-->
+                                <select asp-for="CurrentAccount.CompanyStatusId" asp-items="Html.GetEnumSelectList<CompanyStatusEnum>()" class="form-select form-select-solid fw-bolder" aria-label="Firma Statüsünü Seç." data-control="select2" data-dropdown-parent="#kt_modal_edit_subcontractors" data-placeholder="- Lütfen firma statü seçiniz">
+                                    <option value="">Firma statüsünü seç...</option>
+                                </select>
+                                <!--end::input-->
+                            </div>
+                            <!--end::Input group CompanyStatusId-->
+                        </div>
+                        <!--end::Input group Email & CompanyStatusId-->
+                        <!--begin::Input group BankId IBAN_Code & IBAN-->
+                        <div class="row mb-7">
+                            <!--begin::Input group BankId-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">Banka</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.BankName" class="form-control form-control-solid" placeholder="Banka adı girin" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group BankId-->
+                            <!--begin::Input group IBAN-->
+                            <div class="col-md-6 fv-row">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">IBAN</label>
+                                <!--end::Label-->
+                                <!--begin::Input-->
+                                <input type="text" asp-for="CurrentAccount.IBAN" class="form-control form-control-solid" placeholder="IBAN giriniz" />
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group IBAN-->
+                        </div>
+                        <!--end::Input group BankId & IBAN_Code & IBAN-->
+                    </div>
+                    <!--end::Scroll-->
+                </div>
+                <!--end::Modal body-->
+                <!--begin::Modal footer-->
+                <div class="modal-footer flex-center">
+                    <!--begin::Button-->
+                    <button type="reset" id="kt_modal_edit_subcontractors_cancel" class="btn btn-white me-3" data-bs-dismiss="modal">Vazgeç</button>
+                    <!--end::Button-->
+                    <!--begin::Button-->
+                    <button type="submit" id="kt_modal_edit_subcontractors_submit" class="btn btn-primary">
+                        <span class="indicator-label">Kaydet</span>
+                        <span class="indicator-progress">
+                            Lütfen bekleyin...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
+                    <!--end::Button-->
+                </div>
+                <!--end::Modal footer-->
+            </form>
+            <!--end::Form-->
+        </div>
+    </div>
+</div>
+<!--end::Modal - Subcontractor - Edit-->
+
+@section PageScripts {
+    <!--begin::Page Vendors Javascript(used by this page)-->
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Page Vendors Javascript-->
+    <!--begin::Page Custom Javascript(used by this page)-->
+    <script src="~/assets/js/custom/apps/subcontractor/list.js"></script>
+    <script src="/assets/js/custom/apps/subcontractor/add.js"></script>
+    <script src="/assets/js/custom/apps/subcontractor/edit.js"></script>
+}

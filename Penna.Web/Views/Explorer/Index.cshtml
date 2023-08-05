@@ -1,0 +1,116 @@
+﻿@model ExplorerModel
+@{
+    ViewBag.Title = "Folder Explorer";
+    string _url = Model.URL.ToLower().TrimEnd(trimChar: '/');
+}
+
+<form action="/Explorer/Upload" id="fileUploadForm" method="post" enctype="multipart/form-data">
+
+    <div class="row">
+        <div class="col-8">
+            <div class="card rounded border-primary border border-dashed mb-11">
+                <div class="card-body mb-11">
+                    <h3>@Model.RealUrl</h3>
+
+                    @if (_url != "/explorer/block" && _url != "/explorer/project")
+                    {
+                        <a title="Parent"
+                           href="@Model.ParentFolderName">
+                            @*<i class="fas fa-level-up-alt fa-2x text-info"></i>*@
+                            <img src="~/assets/media/icons/duotone/Files/Upload-folder.svg" alt="Up" />
+                        </a>
+                    }
+
+                    <div class="row">
+                        <span class="col-md-4 text-left">Klasör/Dosya Adı</span>
+                        <span class="col-md-4 text-right">Boyut</span>
+                        <span class="col-md-4 text-right">Son Değişiklik</span>
+                    </div>
+                    <hr class="mt-0 mb-0" />
+                    @*Listing the directories *@
+                    @foreach (DirModel dir in Model.DirModelList)
+                    {
+                        <div class="row">
+                            <span class="col-md-6 text-left">
+                                <img src="~/assets/media/icons/duotone/Files/Folder.svg" alt="Folder Logo" class="text-green" />
+                                <a href="@(Model.URL + dir.DirName)/" title="@dir.DirName">@dir.DirName</a>
+                            </span>
+                            <span class="col-md-2 text-right"></span>
+                            <span class="col-md-4 text-right">@dir.DirAccessed</span>
+                        </div>
+                    }
+                    @*Listing the files *@
+                    @foreach (FileModel file in Model.FileModelList)
+                    {
+                        <div class="row">
+                            <span class="col-md-6">
+                                <a href="@(Model.URL + file.FileName)" title="Download @file.FileName" target="_blank">@file.FileName</a>
+                            </span>
+                            <span class="col-md-2 text-right">@file.FileSizeText</span>
+                            <span class="col-md-4 text-right">@file.FileAccessed</span>
+                        </div>
+                    }
+
+                    <hr class="mt-0 mb-0" />
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body bg-light-primary rounded border-primary border border-dashed">
+                        <div class="row fv-row mb-4">
+                            <label class="required col-md-2">Mimari</label>
+                            <div class="col-md-8">
+                                <input type="file" name="Mimari" class="form-control" id="Mimari" accept="image/*,.pdf" />
+                            </div>
+                        </div>
+                        <div class="row fv-row mb-4">
+                            <label class="required col-md-2">Statik</label>
+                            <div class="col-md-8">
+                                <input type="file" name="Statik" class="form-control" id="Statik" accept="image/*,.pdf" />
+                            </div>
+                        </div>
+                        <div class="row fv-row mb-4">
+                            <label class="required col-md-2">Mekanik</label>
+                            <div class="col-md-8">
+                                <input type="file" name="Mekanik" class="form-control" id="Mekanik" accept="image/*,.pdf" />
+                            </div>
+                        </div>
+                        <div class="row fv-row mb-4">
+                            <label class="required col-md-2">Elektrik</label>
+                            <div class="col-md-8">
+                                <input type="file" name="Elektrik" class="form-control" id="Elektrik" accept="image/*,.pdf" />
+                            </div>
+                        </div>
+                        <div class="row fv-row mb-4">
+                            <label class="required col-md-2">Peyzaj</label>
+                            <div class="col-md-8">
+                                <input type="file" name="Peyzaj" class="form-control" id="Peyzaj" accept="image/*,.pdf" />
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card rounded border-primary border border-dashed mb-11">
+                <div class="card-body">
+                    <input type="hidden" name="URL" value="@Model.URL" />
+                    <input type="hidden" name="RealUrl" value="@Model.RealUrl" />
+
+                    <div class="row fv-row mb-4">
+                        <label class="required">Mesajınızı yazın ve dosyaları yükleyin </label>
+                        <textarea name="Message" id="uploadMessageText" class="form-control form-control-solid" rows="10"></textarea>
+                    </div>
+
+                    <button id="sendMessageSubmit" type="submit" class="btn btn-primary mt-5 w-100">
+                        <i class="fas fa-upload"></i> Yükle
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+@section PageScripts {
+    <script src="~/assets/js/custom/apps/explorer/fileupload.js"></script>
+}

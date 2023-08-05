@@ -1,0 +1,212 @@
+﻿@model ProductDto
+
+@section Styles {
+    <!--begin::Page Product Stylesheets(used by this page)-->
+    <link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Page Product Stylesheets-->
+    <style>
+        input:invalid {
+            border: red solid 3px;
+        }
+    </style>
+}
+
+<!--begin::Card-->
+<div class="card">
+    <!--begin::Card header-->
+    <div class="card-header border-0 pt-10">
+        <h2 class="fw-bolder">
+            @if (Model.Product.Id > 0)
+            {<span>Ürün Güncelleme</span> }
+            else
+            { <span>Yeni Ürün Ekleme</span>}
+        </h2>
+        @if (TempData["message"] != null){
+            <div class="alert alert-danger">
+                <span>@TempData["message"].ToString()</span>
+            </div>
+        }
+    </div>
+    <!--end::Card header-->
+    <!--begin::Card body-->
+    <div class="card-body pt-0">
+        <!--begin::Form-->
+        <form class="form" method="post" id="kt_upsert_products_form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (Model.Product.Id > 0)
+            {
+                <input type="hidden" asp-for="Product.Id" />
+                <input type="hidden" asp-for="Product.ProjectId" />
+                <input type="hidden" asp-for="Product.CreatedBy" />
+                <input type="hidden" asp-for="Product.CreatedDate" />
+            }
+            <!--begin::body-->
+            <div class="pt-10">
+                <!--begin::Input group Name & Brand-->
+                <div class="row mb-7">
+                    <!--begin::Input group Name-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Ürün Adı</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="Product.Name" class="form-control form-control-solid" placeholder="Ürün adı giriniz" />
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="Product.Name"></span>
+                    </div>
+                    <!--end::Input group Name-->
+                    <!--begin::Input group Brand-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Marka</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="Product.Brand" class="form-control form-control-solid" placeholder="Marka giriniz" />
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="Product.Brand"></span>
+                    </div>
+                    <!--end::Input group Brand-->
+                </div>
+                <!--end::Input group Name & Brand-->
+                <!--begin::Input group Quantity & Unit-->
+                <div class="row g-9 mb-7">
+                    <!--begin::Col Unit-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="fs-6 fw-bold mb-2">
+                            <span class="required">Birim</span>
+                            <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Birim"></i>
+                        </label>
+                        <!--end::Label-->
+                        <!--begin::Input unit-->
+                        <select asp-for="Product.UnitId" asp-items="Model.UnitList" class="form-select form-select-solid fw-bolder" aria-label="Birim Seç." data-control="select2" data-dropdown-parent="#kt_upsert_products_form" data-placeholder="- Lütfen bir birim seçiniz">
+                            <option value="">Birim seç...</option>
+                        </select>
+                        <!--end::Input unit-->
+                        <span class="text-danger" asp-validation-for="Product.UnitId"></span>
+                    </div>
+                    <!--end::Col Unit-->
+                    <!--begin::Col Quantity-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Adet</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="Product.Quantity" class="form-control form-control-solid" placeholder="Lütfen adet giriniz." />
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="Product.Quantity"></span>
+                    </div>
+                    <!--end::Col Quantity-->
+                </div>
+                <!--end::Input group QuantityId & UnitId-->
+                <!--begin::Input group Dimensions & Thickness-->
+                <div class="row g-9 mb-7">
+                    <!--begin::Col Dimensions-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="fs-6 fw-bold mb-2">Ebat (En/Boy)</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="Product.Dimensions" class="form-control form-control-solid" placeholder="Lütfen ebat giriniz" />
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="Product.Dimensions"></span>
+                    </div>
+                    <!--end::Col Dimensions-->
+                    <!--begin::Col Thickness-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="fs-6 fw-bold mb-2">Kalınlık</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="Product.Thickness" class="form-control form-control-solid" placeholder="Lütfen kalınlığını giriniz" />
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="Product.Thickness"></span>
+                    </div>
+                    <!--end::Col Thickness-->
+                </div>
+                <!--end::Input group Dimensions & Thickness-->
+                <!--begin::Input group Species & BusinessGroupId-->
+                <div class="row g-9 mb-7">
+                    <!--begin::Col Species-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="fs-6 fw-bold mb-2">Türü/Cinsi</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <input type="text" asp-for="Product.Species" class="form-control form-control-solid" placeholder="Lütfen tür veya cinsini giriniz." />
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="Product.Species"></span>
+                    </div>
+                    <!--end::Col Species-->
+                    <!--begin::Col BusinessGroupId-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">İş Grubu</label>
+                        <!--end::Label-->
+                        <!--begin::Input-->
+                        <select asp-for="Product.BusinessGroupId" asp-items="@Html.GetEnumSelectList<BusinessGroupEnum>()" class="form-select form-select-solid fw-bolder">
+                            <option value="">İş grubu seç...</option>
+                        </select>
+                        <!--end::Input-->
+                        <span class="text-danger" asp-validation-for="Product.BusinessGroupId"></span>
+                    </div>
+                    <!--end::Col BusinessGroupId-->
+                </div>
+                <!--end::Input group Species & BusinessGroupId-->
+                <!--begin::Input group Status-->
+                <div class="row g-9 mb-7">
+                    <!--begin::Col Status-->
+                    <div class="col-md-6 fv-row">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2">Durumu</label>
+                        <!--end::Label-->
+                        <!--begin::input-->
+                        <select asp-for="Product.Status" asp-items="Html.GetEnumSelectList<StatusEnum>()" class="form-select form-select-solid fw-bolder"></select>
+                        <!--end::input-->
+                        <span class="text-danger" asp-validation-for="Product.Status"></span>
+                    </div>
+                    <!--end::Input group Status-->
+                    <!--begin::Col BusinessGroupId-->
+                    <div class="col-md-6 fv-row">
+                        <div class="form-check form-check-solid form-switch fv-row mt-10">
+							<input class="form-check-input w-45px h-30px" type="checkbox" asp-for="Product.IsConcrete">
+							<label class="form-check-label fs-4" for="allowmarketing">Beton</label>
+						</div>
+                        <span class="text-danger" asp-validation-for="Product.IsConcrete"></span>
+                    </div>
+                    <!--end::Col BusinessGroupId-->
+                </div>
+                <!--end::Input group Status-->
+            </div>
+            <!--end::body-->
+            <!--begin::Modal footer-->
+            <div class="flex-center pt-10">
+                <!--begin::Button-->
+                <button type="submit" id="kt_upsert_products_submit" class="btn btn-primary">
+                    <span class="indicator-label">Kaydet</span>
+                    <span class="indicator-progress">
+                        Lütfen bekleyin...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                </button>
+                <!--end::Button-->
+                <!--begin::Button geridön-->
+                <a asp-action="Index" class="btn btn-white me-3">Geri Dön</a>
+                <!--end::Button-->
+            </div>
+            <!--end::Modal footer-->
+        </form>
+        <!--end::Form-->
+    </div>
+    <!--end::Card body-->
+</div>
+<!--end::Card-->
+
+@section PageScripts {
+    <!--begin::Page Products Javascript(used by this page)-->
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Page Products Javascript-->
+    <!--begin::Page Custom Javascript(used by this page)-->
+    <script src="/assets/js/custom/apps/product/upsert.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+} 

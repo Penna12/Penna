@@ -1,0 +1,260 @@
+﻿@model AppUserEditDto
+@using System.Security.Claims
+@using Penna.Core.Utilities.Constants
+@{ string status = Model.Status ? "Aktif" : "Pasif"; var roleName = User.FindFirst(c => c.Type == ClaimTypes.Role)?.Value; }
+
+<div class="d-flex flex-column flex-xl-row">
+
+    <!--begin::Content-->
+    <div class="flex-lg-row-fluid me-lg-15">
+        <!--begin::Form-->
+        <form class="form" asp-action="SaveProfile" method="post" id="kt_edt_my_profile_form" enctype="multipart/form-data">
+            <!--begin::Customer-->
+            <div class="card card-flush pt-3 mb-5 mb-lg-10">
+                <!--begin::Card header-->
+                <div class="card-header">
+                    <!--begin::Card title-->
+                    <div class="card-title">
+                        <h2 class="fw-bolder">Profilim</h2>
+                    </div>
+                    <!--begin::Card title-->
+                </div>
+                <!--end::Card header-->
+                <!--begin::Card body-->
+                <div class="card-body pt-0">
+                    <!--begin::Description-->
+                    <div class="text-gray-500 fw-bold fs-5 mb-0">Profil bilgilerini güncelle:</div>
+                    <!--end::Description-->
+                    <!--begin::profilim başlık-->
+                    <div class="d-flex align-items-center p-3 mb-2">
+                        <!--begin::Avatar-->
+                        <div class="symbol symbol-60px symbol-circle me-3">
+                            <img alt="@Model.FullName" src="@SD.ProfileImagePath@Model.PictureUrl" />
+                        </div>
+                        <!--end::Avatar-->
+                        <!--begin::Info-->
+                        <div class="d-flex flex-column d-none">
+                            <!--begin::Name-->
+                            <a href="#" class="fs-4 fw-bolder text-gray-900 text-hover-primary me-2">@Model.FullName</a>
+                            <!--end::Name-->
+                            <!--begin::Email-->
+                            <a href="#" class="fw-bold text-gray-600 text-hover-primary">@Model.Email</a>
+                            <!--end::Email-->
+                        </div>
+                        <!--end::Info-->
+                    </div>
+                    <!--end::profilim başlık-->
+                    <!--begin::Notice-->
+                    <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed rounded-3 p-6">
+                        <!--begin::Wrapper-->
+                        <div class="flex-stack flex-grow-1">
+                            <!--begin::Content-->
+
+                            <input type="hidden" asp-for="Id" />
+                            <input type="hidden" asp-for="Status" />
+                            <input type="hidden" asp-for="TenantId" />
+                            <input type="hidden" asp-for="TCIdentityNo" />
+                            <input type="hidden" asp-for="PictureUrl" />
+                            <input type="hidden" asp-for="PictureRealName" />
+                            <input type="hidden" asp-for="PictureContentType" />
+
+                            <div class="d-flex flex-column mb-8 fv-row">
+                                <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                                    <span class="required">Ad Soyad</span>
+                                </label>
+                                <input type="text" asp-for="FullName" class="form-control form-control-solid" placeholder="Ad Soyad giriniz" />
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+
+                            <div class="row g-9 mb-8">
+                                <div class="col-md-6 fv-row">
+                                    <div class="form-group">
+                                        <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                                            <span class="required">Eposta</span>
+                                            <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="Kullanmakta olduğunuz geçerli epostanızı giriniz"></i>
+                                        </label>
+                                        <input type="text" asp-for="Email" class="form-control form-control-solid" placeholder="Eposta giriniz" />
+                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 fv-row">
+                                    <div class="form-group">
+                                        <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                                            <span class="required">Telefon</span>
+                                            <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="Kullanmakta olduğunuz telefon numaranızı giriniz"></i>
+                                        </label>
+                                        <input type="text" asp-for="PhoneNumber" class="form-control form-control-solid" data-inputmax="(999) 999-9999" placeholder="Telefon no giriniz" />
+                                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-column mb-8">
+                                <label class="fs-6 fw-bold mb-2">Adres</label>
+                                <textarea asp-for="Address" class="form-control form-control-solid" rows="3" placeholder="Adresinizi giriniz"></textarea>
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+
+                            <div class="row g-9 mb-8">
+                                <div class="col-md-6 fv-row">
+                                    <div class="form-group">
+                                        <label class="fs-6 fw-bold mb-2">Şehir</label>
+                                        <select asp-for="CityId" asp-items="Model.CityList" class="form-select form-select-solid" data-control="select2" data-hide-search="false" data-placeholder="- Lütfen bir şehir seçiniz">
+                                            <option value="">Şehir seç...</option>
+                                        </select>
+                                        @*@Html.DropDownListFor(m => m.CityId, Model.CityList, "- Lütfen bir şehir seçiniz -", new { @class = "form-select form-select-solid" })*@
+                                        <span asp-validation-for="CityId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 fv-row">
+                                    <div class="form-group">
+                                        <label class="fs-6 fw-bold mb-2">Ülke</label>
+                                        <select asp-for="CountryId" asp-items="Model.CountryList" class="form-select form-select-solid" data-control="select2" data-dropdown-parent="#edt-my-profile" data-hide-search="false" data-placeholder="- Lütfen bir ülke seçiniz">
+                                            <option value="">Ülke seç...</option>
+                                        </select>
+                                        @*@Html.DropDownListFor(m => m.CountryId, Model.CountryList,  "- Lütfen bir ülke seçiniz -", new { @class = "form-select form-select-solid" })*@
+                                        <span asp-validation-for="CountryId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="">
+                                <button type="submit" id="kt_edt_my_profile_submit" class="btn btn-primary">
+                                    <span class="indicator-label">Profili Güncelle</span>
+                                    <span class="indicator-progress">
+                                        Lütfen bekleyin...
+                                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                    </span>
+                                </button>
+                            </div>
+
+                            <!--end::Content-->
+                        </div>
+                        <!--end::Wrapper-->
+                    </div>
+                    <!--end::Notice-->
+                </div>
+                <!--end::Card body-->
+            </div>
+            <!--end::Customer-->
+        </form>
+        <!--end::Form-->
+    </div>
+    <!--end::Content-->
+    <!--begin::Sidebar-->
+    <div class="flex-column flex-lg-row-auto w-100 w-xl-300px mb-10">
+        <!--begin::Card-->
+        <div class="card card-flush pt-3 mb-0" data-kt-sticky="true" data-kt-sticky-name="subscription-summary" data-kt-sticky-offset="{default: false, xl: '200px'}" data-kt-sticky-width="{lg: '250px', xl: '300px'}" data-kt-sticky-left="auto" data-kt-sticky-top="150px" data-kt-sticky-animation="false" data-kt-sticky-zindex="95">
+            <!--begin::Card header-->
+            <div class="card-header">
+                <!--begin::Card title-->
+                <div class="card-title">
+                    <h2>Profilim</h2>
+                </div>
+                <!--end::Card title-->
+            </div>
+            <!--end::Card header-->
+            <!--begin::Card body-->
+            <div class="card-body pt-0 fs-6">
+                <!--begin::Section-->
+                <div class="mb-7">
+                    <!--begin::Title-->
+                    <h5 class="mb-3 text-primary">@roleName</h5>
+                    <!--end::Title-->
+                    <!--begin::Details-->
+                    <div class="d-flex align-items-center mb-1">
+                        <!--begin::Name-->
+                        <a href="javascript:void()" class="fw-bolder text-gray-800 text-hover-primary me-2">@Model.FullName</a>
+                        <!--end::Name-->
+                        <!--begin::Status-->
+                        <span class="badge badge-light-success">@status</span>
+                        <!--end::Status-->
+                    </div>
+                    <!--end::Details-->
+                    <!--begin::Email-->
+                    <a href="#" class="fw-bold text-gray-600 text-hover-primary">@Model.Email</a>
+                    <!--end::Email-->
+                </div>
+                <!--end::Section-->
+                <!--begin::Section-->
+                <div class="mb-7">
+                    <!--begin::Title-->
+                    <div class="form-group mb-7">
+                        @{
+                            if (string.IsNullOrEmpty(Model.PictureUrl))
+                            {
+                                <img src="/assets/media/avatars/blank.png" class="symbol symbol-60px symbol-circle me-3" width="150" />
+                            }
+                            else
+                            {
+                                <img src="@SD.ProfileImagePath@Model.PictureUrl" alt="@Model.FullName" class="symbol symbol-60px symbol-circle me-3" />
+                            }
+                        }
+                    </div>
+                    <!--begin::Seperator-->
+                    <div class="separator separator-dashed mb-7"></div>
+                    <!--end::Seperator-->
+                    <form class="form" asp-action="ProfileImageUpload" method="post" id="kt_edt_my_profile_form" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="PictureUrl" />
+                        <div class="form-group mb-7">
+                            <label>Resim Seç:</label>
+                            <input type="file" asp-for="NewImage" class="form-control" />
+                        </div>
+                        <!--begin::Actions-->
+                        <div class="mb-0">
+                            <button type="submit" class="btn btn-primary" id="kt_image_upload_button">
+                                <!--begin::Indicator-->
+                                <span class="indicator-label">Resim Yükle</span>
+                                <span class="indicator-progress">
+                                    Please wait...
+                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                </span>
+                                <!--end::Indicator-->
+                            </button>
+                        </div>
+                        <!--end::Actions-->
+                    </form>
+                    <!--end::Details-->
+                </div>
+                <!--end::Section-->
+
+            </div>
+            <!--end::Card body-->
+        </div>
+        <!--end::Card-->
+    </div>
+    <!--end::Sidebar-->
+</div>
+
+@section PageScripts {
+    <!--begin::Page Custom Javascript(used by this page)-->
+    @*<script src="/assets/js/custom/modals/edt-myprofile.js"></script> - FluentValidation ile yapıldığından burası kapatıldı.*@
+}
+@section Scripts {
+    <script>
+        $(function () {
+            Inputmask({
+                "mask": "(999) 999-9999"
+            }).mask("#PhoneNumber");
+            Inputmask({
+                mask: "*{1,20}[.*{1,20}][.*{1,20}][.*{1,20}]@@*{1,20}[.*{2,6}][.*{1,2}]",
+                greedy: false,
+                onBeforePaste: function (pastedValue, opts) {
+                    pastedValue = pastedValue.toLowerCase();
+                    return pastedValue.replace("mailto:", "");
+                },
+                definitions: {
+                    "*": {
+                        validator: '[0-9A-Za-z!#$%&"*+/=?^_`{|}~\-]',
+                        cardinality: 1,
+                        casing: "lower"
+                    }
+                }
+            }).mask("#Email");
+            //Inputmask({ mask: "99/99/9999" }).mask("#Date");
+            //Inputmask({ mask: "(999) 999-9999" }).mask("#PhoneNumber");
+        });
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}
